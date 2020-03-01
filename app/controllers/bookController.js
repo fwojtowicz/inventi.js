@@ -3,9 +3,9 @@ const Book = db.books
 const Op = db.Sequelize.Op
 
 exports.create = (req,res) => {
-  if (!req.body.title) {
+  if (!req.body.isbn) {
     res.status(400).send({
-      message: "Title is required"
+      message: "isbn is required"
     })
     return
   }
@@ -22,7 +22,7 @@ exports.create = (req,res) => {
     language: req.body.language_of_original,
     whoLend: req.body.whoLend,
     whoBorrowed: req.body.whoBorrowed,
-    isRequested: req.body.isRequested ? req.body.isRequested : false
+    isRequested: req.body.isRequested ? req.body.isRequested : 0
   }
 
   Book.create(book)
@@ -40,7 +40,7 @@ exports.findAll = (req, res) => {
   const title = req.query.title
   var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
 
-  Book.findAll({whete: condition}) 
+  Book.findAll({where: condition}) 
   .then(data => {
     res.send(data)
   }).catch(err=> {

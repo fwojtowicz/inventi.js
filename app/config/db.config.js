@@ -1,8 +1,8 @@
 module.exports = {
   HOST: "localhost",
-  USER: "erato",
-  PASSWORD: "erato",
-  DB: "erato_development",
+  USER: "eureka",
+  PASSWORD: "eureka",
+  DB: "eureka_development",
   dialect: "postgres",
   pool: {
     max: 5,

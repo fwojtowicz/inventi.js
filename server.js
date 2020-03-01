@@ -9,16 +9,22 @@ var corsOptions = {
 }
 
 app.use(cors(corsOptions))
+
 app.use(bodyParser.json())
+
 app.use(bodyParser.urlencoded({extended: true}))
 
 const db = require("./app/models")
-db.sequelize.sync()
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
 
 app.get("/", (req, res) => {
   res.json({message: "Welcome"})
 })
+
 require("./app/routes/bookRoutes")(app)
+
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 
