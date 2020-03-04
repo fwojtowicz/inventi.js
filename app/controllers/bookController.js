@@ -3,26 +3,26 @@ const Book = db.books
 const Op = db.Sequelize.Op
 
 exports.create = (req,res) => {
-  if (!req.body.isbn) {
+  if (!req.body.data.isbn) {
     res.status(400).send({
-      message: "isbn is required"
+      message: "isbn is required damn it"
     })
     return
   }
 
   const book =  {
-    isbn: req.body.isbn,
-    title: req.body.title ,
-    author: req.body.author,
-    publication_year: req.body.publication_year,
-    place_of_publication: req.body.place_of_publication,
-    publisher: req.body.publisher,
-    genre: req.body.genre,
-    language_of_original: req.body.language_of_original,
-    language: req.body.language_of_original,
-    whoLend: req.body.whoLend,
-    whoBorrowed: req.body.whoBorrowed,
-    isRequested: req.body.isRequested ? req.body.isRequested : 0
+    isbn: req.body.data.isbn,
+    title: req.body.data.title ,
+    author: req.body.data.author,
+    publication_year: req.body.data.publication_year,
+    place_of_publication: req.body.data.place_of_publication,
+    publisher: req.body.data.publisher,
+    genre: req.body.data.genre,
+    language_of_original: req.body.data.language_of_original,
+    language: req.body.data.language_of_original,
+    whoLend: req.body.data.whoLend,
+    whoBorrowed: req.body.data.whoBorrowed,
+    isRequested: req.body.data.isRequested ? req.body.data.isRequested : 0
   }
 
   Book.create(book)
@@ -66,23 +66,23 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
   const id = req.params.id
-  Book.update(req.body, {
+  Book.update(req.body.data, {
     where: {id: id}
   }) 
   .then (num => {
     if (num == 1) {
       res.send({
-        message: "Book was updatewd successfully"
+        message: "Book was updated successfully"
       })
     }
     else {
       res.send ({
-        message: "Cannot update book with id" + id
+        message: "Cannot update book with id " + id
       })
     }
   }).catch(err => {
     res.status(500).send({
-      message: "Error updating book with id" +id
+      message: "Error updating book with id " +id
     })
   })
 }
