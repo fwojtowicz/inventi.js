@@ -3,9 +3,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
+var whitelist = ["https://eurekajs.netlify.com", "http://localhost:8080"];
 
 var corsOptions = {
-  origin: "https://eurekajs.netlify.com"
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else callback(new Error("Not allowed by CORS"));
+  }
 };
 
 app.use(cors(corsOptions));
