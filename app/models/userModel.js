@@ -21,6 +21,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       notEmpty: true,
     },
+    googleID: {
+      type: Sequelize.STRING,
+    },
   })
   return User
 }

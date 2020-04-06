@@ -1,5 +1,5 @@
-const dbConfig = require("../config/db.config.js");
-const Sequelize = require("sequelize");
+const dbConfig = require("../config/db.config.js")
+const Sequelize = require("sequelize")
 
 if (process.env.DATABASE_URL) {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
@@ -7,8 +7,8 @@ if (process.env.DATABASE_URL) {
     protocol: "postgres",
     port: 5432,
     host: "<heroku host>",
-    logging: true
-  });
+    logging: true,
+  })
 } else {
   sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
@@ -18,16 +18,17 @@ if (process.env.DATABASE_URL) {
       max: dbConfig.pool.max,
       min: dbConfig.pool.min,
       acquire: dbConfig.pool.acquire,
-      idle: dbConfig.pool.idle
-    }
-  });
+      idle: dbConfig.pool.idle,
+    },
+  })
 }
 
-const db = {};
+const db = {}
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+db.Sequelize = Sequelize
+db.sequelize = sequelize
 
-db.books = require("./bookModel.js")(sequelize, Sequelize);
+db.books = require("./bookModel.js")(sequelize, Sequelize)
+db.users = require("./userModel.js")(sequelize, Sequelize)
 
-module.exports = db;
+module.exports = db
