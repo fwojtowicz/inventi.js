@@ -1,35 +1,40 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+const express = require("express")
+const bodyParser = require("body-parser")
+const cors = require("cors")
+const authRoutes = require("./app/routes/authRoutes")
+const app = express()
 
-const app = express();
-var whitelist = ["https://eurekajs.netlify.com", "http://localhost:8080"];
+require("dotenv").config({ path: ".env" })
 
-var corsOptions = {
-  origin: function(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else callback(new Error("Not allowed by CORS"));
-  }
-};
+const passportSetup = require("./app/config/passport.config")
+// var whitelist = ["https://eurekajs.netlify.com", "http://localhost:8080"]
 
-app.use(cors(corsOptions));
+// var corsOptions = {
+//   origin: function(origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else callback(new Error("Not allowed by CORS"));
+//   }
+// };
 
-app.use(bodyParser.json());
+app.set("view engine", "ejs")
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/api/auth/", authRoutes)
 
-const db = require("./app/models");
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.get("/api", (req, res) => {
+  res.render("home")
+})
+
+// require("./app/routes/bookRoutes")(app)
+const db = require("./app/models")
 
 db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+  console.log("Drop and re-sync db.")
+})
 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome in eureka.js" });
-});
-
-require("./app/routes/bookRoutes")(app);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
