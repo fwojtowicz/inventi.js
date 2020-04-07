@@ -2,9 +2,11 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const authRoutes = require("./app/routes/authRoutes")
-const app = express()
-
+const cookieSession = require("cookie-session")
+const passport = require("passport")
 require("dotenv").config({ path: ".env" })
+
+const app = express()
 
 const passportSetup = require("./app/config/passport.config")
 // var whitelist = ["https://eurekajs.netlify.com", "http://localhost:8080"]
@@ -18,6 +20,15 @@ const passportSetup = require("./app/config/passport.config")
 // };
 
 app.set("view engine", "ejs")
+
+app.use(
+  cookieSession({
+    maxAge: 60 * 60 * 1000,
+    keys: [process.env.COOKIE_SECRET],
+  })
+)
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use("/api/auth/", authRoutes)
 

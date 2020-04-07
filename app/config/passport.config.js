@@ -1,7 +1,17 @@
 const passport = require("passport")
-const GoogleStrategy = require("passport-google-oauth20")
+const GoogleStrategy = require("passport-google-oauth20").Strategy
 const db = require("../models")
 const User = db.users
+
+passport.serializeUser((user, done) => {
+  done(null, user[0].dataValues.id)
+})
+
+passport.deserializeUser((id, done) => {
+  User.findByPk(id).then((user) => {
+    done(null, user)
+  })
+})
 
 passport.use(
   new GoogleStrategy(
@@ -11,15 +21,17 @@ passport.use(
       callbackURL: "/api/auth/google/redirect",
     },
     (accessToken, refreshToken, profile, done) => {
-      //   console.log("passport callback")
-      //   console.log(profile)
-
-      const user = {
-        email: profile.emails[0].value,
-        username: profile.displayName,
-        googleID: profile.id,
-      }
-      User.create(user)
+      User.findOrCreate({
+        where: { googleID: profile.id },
+        defaults: {
+          email: profile.emails[0].value,
+          username: profile.displayName,
+          googleID: profile.id,
+        },
+      }).then((newUser) => {
+        console.log("NEWUSER", newUser[0].dataValues.id)
+        done(null, newUser)
+      })
     }
   )
 )
