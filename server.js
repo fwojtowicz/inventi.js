@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const authRoutes = require("./app/routes/authRoutes")
+const profileRoutes = require("./app/routes/profileRoutes")
 const cookieSession = require("cookie-session")
 const passport = require("passport")
 require("dotenv").config({ path: ".env" })
@@ -31,13 +32,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use("/api/auth/", authRoutes)
+app.use("/api/profile/", profileRoutes)
 
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get("/api", (req, res) => {
-  res.render("home")
+  res.render("home", { user: req.user })
 })
 
 // require("./app/routes/bookRoutes")(app)
