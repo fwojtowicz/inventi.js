@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <ul>
+      <% if (user) {%>
+      <li><a href="/api/auth/logout">Logout</a></li>
+      <% } %>
+      <li><a href="/api">Homepage</a></li>
+    </ul>
+    <main>
+      <a href="/api/auth/google">Google</a>
+    </main>
+  </body>
+</html>

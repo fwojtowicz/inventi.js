@@ -1,19 +1,19 @@
-module.exports = app => {
-  const books = require("../controllers/bookController.js");
+// module.exports = app => {
+//   const books = require("../controllers/bookController.js");
 
-  var router = require("express").Router();
+//   var router = require("express").Router();
 
-  router.post("/", books.create);
+//   router.post("/", books.create);
 
-  router.get("/", books.findAll);
+//   router.get("/", books.findAll);
 
-  router.get("/:id", books.findOne);
+//   router.get("/:id", books.findOne);
 
-  router.patch("/:id", books.update);
+//   router.patch("/:id", books.update);
 
-  router.delete("/:id", books.delete);
+//   router.delete("/:id", books.delete);
 
-  router.delete("/", books.deleteAll);
+//   router.delete("/", books.deleteAll);
 
-  app.use('/api/books', router);
-};
+//   app.use('/api/books', router);
+// };
