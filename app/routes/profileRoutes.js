@@ -5,11 +5,12 @@ const controller = require("../controllers/userController")
 const authCheck = (req, res, next) => {
   console.log("REQ", req)
   if (!req.user) {
+    authJWT.verifyToken(req, res, next)
     res.redirect("/api/auth/login")
   } else next()
 }
 
-router.get("/", authJWT.verifyToken, (req, res) => {
+router.get("/", authCheck, (req, res) => {
   res.send("hereiam")
   // res.render("profile", { user: req.user })
 })
