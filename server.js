@@ -1,7 +1,9 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
-const authRoutes = require("./app/routes/authRoutes")
+const authRoutesLocal = require("./app/routes/authRoutesLocal")
+const authRoutesOAuth = require("./app/routes/authRoutesOAuth")
+
 const profileRoutes = require("./app/routes/profileRoutes")
 const cookieSession = require("cookie-session")
 const passport = require("passport")
@@ -25,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const passportSetup = require("./app/config/passport.config")
 
 // require("./app/routes/bookRoutes")(app)
-require("./app/routes/authRoutes")(app)
+require("./app/routes/authRoutesLocal")(app)
 require("./app/routes/userRoutes")(app)
 
 app.set("view engine", "ejs")
@@ -39,7 +41,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use("/api/auth/", authRoutes)
+app.use("/api/auth/", authRoutesOAuth)
 app.use("/api/profile/", profileRoutes)
 
 app.get("/api", (req, res) => {
