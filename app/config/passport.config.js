@@ -27,6 +27,7 @@ passport.use(
           email: profile.emails[0].value,
           username: profile.displayName,
           googleID: profile.id,
+          role: "user",
         },
       }).then((newUser) => {
         console.log("NEWUSER", newUser[0].dataValues.id)

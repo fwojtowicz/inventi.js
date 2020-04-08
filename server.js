@@ -24,11 +24,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //   }
 // };
 
+require("./app/routes/authRoutesLocal")(app)
 const passportSetup = require("./app/config/passport.config")
 
 // require("./app/routes/bookRoutes")(app)
-require("./app/routes/authRoutesLocal")(app)
-require("./app/routes/userRoutes")(app)
+// require("./app/routes/userRoutes")(app)
 
 app.set("view engine", "ejs")
 

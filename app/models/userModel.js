@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
     googleID: {
       type: Sequelize.STRING,
     },
+    role: {
+      type: Sequelize.STRING,
+    },
   })
   return User
 }
