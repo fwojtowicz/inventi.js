@@ -14,11 +14,11 @@
 //     res.render("home", { user: req.user })
 //   })
 
-//   //   app.get("/api/profile", [authJWT.verifyToken], controller.userBoard)
+//   //   app.get("/api/profile", [authJWT.verifyUser], controller.userBoard)
 
 //   app.get(
 //     "/api/test/admin",
-//     [authJWT.verifyToken, authJWT.isAdmin],
+//     [authJWT.verifyUser, authJWT.isAdmin],
 //     controller.adminBoard
 //   )
 // }

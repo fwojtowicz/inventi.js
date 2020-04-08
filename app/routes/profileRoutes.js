@@ -3,23 +3,15 @@ const { authJWT } = require("../middlewares")
 const controller = require("../controllers/userController")
 
 const authCheck = (req, res, next) => {
-  let token = req.headers["x-access-token"]
-
+  console.log("REQ", req)
   if (!req.user) {
-    if (!token) {
-      res
-        .status(403)
-        .send({
-          message: "No token provided",
-        })
-        .redirect("/api/auth/login")
-    } else next()
+    res.redirect("/api/auth/login")
   } else next()
 }
 
-router.get("/", authCheck, (req, res) => {
-  if (req.user) res.render("profile", { user: req.user })
-  else res.status(200).send("User Content.")
+router.get("/", authJWT.verifyToken, (req, res) => {
+  res.send("hereiam")
+  // res.render("profile", { user: req.user })
 })
 
 router.get(
