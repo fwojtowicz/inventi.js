@@ -28,7 +28,22 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
-db.books = require("./bookModel.js")(sequelize, Sequelize)
-db.users = require("./userModel.js")(sequelize, Sequelize)
+db.book = require("./bookModel.js")(sequelize, Sequelize)
+db.user = require("./userModel.js")(sequelize, Sequelize)
+db.role = require("./roleModel")(sequelize, Sequelize)
+
+db.role.belongsToMany(db.user, {
+  through: "user_roles",
+  foreignKey: "roleID",
+  otherKey: "userID",
+})
+
+db.user.belongsToMany(db.role, {
+  through: "user_roles",
+  foreignKey: "userID",
+  otherKey: "roleID",
+})
+
+db.ROLES = ["user", "admin"]
 
 module.exports = db
