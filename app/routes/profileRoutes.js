@@ -6,7 +6,6 @@ const authCheck = (req, res, next) => {
   console.log("REQ", req)
   if (!req.user) {
     authJWT.verifyToken(req, res, next)
-    // res.redirect("/api/auth/login")
     // console.log("USERID", req.UserID)
   } else {
     req.UserID = req.user.dataValues.id
@@ -16,7 +15,7 @@ const authCheck = (req, res, next) => {
 
 router.get("/", authCheck, (req, res) => {
   console.log("USERID", req.UserID)
-  res.send("hereiam")
+  res.send("Hello, user with ID " + req.UserID)
   // res.render("profile", { user: req.user })
 })
 
