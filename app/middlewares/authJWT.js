@@ -10,9 +10,10 @@ verifyToken = (req, res, next) => {
   }
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({
-        message: "Unauthorized",
-      })
+      return res.redirect("/api/auth/login")
+      // return res.status(401).send({
+      //   message: "Unauthorized",
+      // })
     }
     req.UserID = decoded.id
     next()
@@ -20,10 +21,12 @@ verifyToken = (req, res, next) => {
 }
 
 isAdmin = (req, res, next) => {
-  User.findByPK(req.UserID).then((user) => {
+  console.log("CALLED", req.UserID)
+  User.findByPk(req.UserID).then((user) => {
     user.getRoles().then((roles) => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "admin") {
+          console.log("isAdmin!!!")
           next()
           return
         }
