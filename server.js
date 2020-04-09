@@ -51,21 +51,20 @@ app.get("/api", (req, res) => {
 const db = require("./app/models")
 const Role = db.role
 
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.")
-  initial()
+db.sequelize.sync().then(() => {
+  // initial()
 })
 
-function initial() {
-  Role.create({
-    id: 1,
-    name: "user",
-  })
-  Role.create({
-    id: 2,
-    name: "admin",
-  })
-}
+// function initial() {
+//   Role.create({
+//     id: 1,
+//     name: "user",
+//   })
+//   Role.create({
+//     id: 2,
+//     name: "admin",
+//   })
+// }
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`))

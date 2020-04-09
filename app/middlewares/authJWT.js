@@ -4,11 +4,9 @@ const db = require("../models")
 const User = db.user
 
 verifyToken = (req, res, next) => {
-  console.log("YOUCALLEDME")
   let token = req.headers["x-access-token"]
-
   if (!token) {
-    return res.status(403).redirect("/api/auth/login")
+    return res.redirect("/api/auth/login")
   }
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
