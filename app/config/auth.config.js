@@ -1,3 +1,3 @@
 module.exports = {
-  secret: "ksdnjkjsdnkjson637ef6u6fvs",
+  secret: process.env.COOKIE_SECRET,
 }

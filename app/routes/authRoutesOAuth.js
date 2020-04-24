@@ -5,31 +5,32 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const db = require("../models")
 const User = db.user
 
-async function verify(token) {
+const verify = async (token) => {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
-    // Or, if multiple clients access the backend:
-    //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+    audience: process.env.GOOGLE_CLIENT_ID,
   })
+
+  return ticket
+}
+
+const checkGoogleAccount = async (ticket) => {
   const payload = ticket.getPayload()
   const userid = payload["sub"]
   console.log("GOOGLE ID TOKEN SUCCESSFULLY AUTHENTICATED")
-  console.log(payload)
-
-  User.findOrCreate({
-    where: { googleID: payload.sub },
+  const newUser = await User.findOrCreate({
+    where: { googleID: userid },
     defaults: {
       email: payload.email,
       username: payload.name,
       googleID: userid,
       role: "user",
     },
-  }).then((newUser) => {
-    console.log("NEWUSER", newUser)
   })
-  // If request specified a G Suite domain:
-  //const domain = payload['hd'];
+  return newUser
+  // .then((newUser) => {
+  // console.log("NEWUSER", newUser[0].dataValues.id)
+  // })
 }
 
 router.get("/login", (req, res) => {
@@ -41,23 +42,30 @@ router.get("/logout", (req, res) => {
   res.redirect("/api")
 })
 
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
-)
-
 router.post("/google", (req, res) => {
-  console.log("IDTOKEN", req.body.user.tc.id_token)
-  verify(req.body.user.tc.id_token).catch(console.error)
-}),
-  router.get(
-    "/google/redirect",
-    passport.authenticate("google"),
-    (req, res) => {
-      res.redirect("/api/profile/")
-    }
-  )
+  verify(req.body.user.tc.id_token + "jdbhjhdasbkhdabsjhgvdttyaew")
+    .then((ticket) => {
+      console.log("ticket", ticket)
+      checkGoogleAccount(ticket)
+        .then((user) => res.send(user))
+        .catch(console.error)
+      // .then((newUser) => {
+      //   console.log("fuck", newUser)
+      // })
+      // .catch(console.error)
+    })
+    .catch(console.error)
+  // console.log("RESULT", result)
+  // res.send(result)
+})
+// router.get(
+//   "/google",
+//   passport.authenticate("google", {
+//     scope: ["profile", "email"],
+//   })
+// )
+// router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
+//   res.redirect("/api/profile/")
+// })
 
 module.exports = router
