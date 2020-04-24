@@ -4,6 +4,8 @@ const { OAuth2Client } = require("google-auth-library")
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const db = require("../models")
 const User = db.user
+var jwt = require("jsonwebtoken")
+const config = require("../config/auth.config")
 
 const verify = async (token) => {
   const ticket = await client.verifyIdToken({
@@ -24,10 +26,17 @@ const checkGoogleAccount = async (ticket) => {
       email: payload.email,
       username: payload.name,
       googleID: userid,
-      role: "user",
     },
   })
-  return newUser
+  // newUser.setRoles([1])
+
+  console.log(config.secret)
+
+  var token = jwt.sign({ id: newUser[0].dataValues.id }, config.secret, {
+    expiresIn: 3600, //1h
+  })
+  console.log("TOKEN", token)
+  return { newUser: newUser, accessToken: token }
   // .then((newUser) => {
   // console.log("NEWUSER", newUser[0].dataValues.id)
   // })
@@ -43,11 +52,12 @@ router.get("/logout", (req, res) => {
 })
 
 router.post("/google", (req, res) => {
-  verify(req.body.user.tc.id_token + "jdbhjhdasbkhdabsjhgvdttyaew")
+  console.log("REQ", req.body.id_token)
+  verify(req.body.id_token)
     .then((ticket) => {
       console.log("ticket", ticket)
       checkGoogleAccount(ticket)
-        .then((user) => res.send(user))
+        .then((obj) => res.send(obj))
         .catch(console.error)
       // .then((newUser) => {
       //   console.log("fuck", newUser)

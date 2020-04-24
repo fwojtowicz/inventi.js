@@ -10,10 +10,10 @@ verifyToken = (req, res, next) => {
   }
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.redirect("/api/auth/login")
-      // return res.status(401).send({
-      //   message: "Unauthorized",
-      // })
+      // return res.redirect("/api/auth/login")
+      return res.status(401).send({
+        message: "Unauthorized",
+      })
     }
     req.UserID = decoded.id
     next()
