@@ -31,15 +31,22 @@ db.sequelize = sequelize
 db.book = require("./bookModel.js")(sequelize, Sequelize)
 db.user = require("./userModel.js")(sequelize, Sequelize)
 db.role = require("./roleModel")(sequelize, Sequelize)
+db.role = require("./authorModel")(sequelize, Sequelize)
+db.role = require("./bookDetailsModel")(sequelize, Sequelize)
+db.role = require("./categoryModel")(sequelize, Sequelize)
+db.role = require("./genreModel")(sequelize, Sequelize)
+db.role = require("./loanModel")(sequelize, Sequelize)
+db.role = require("./ownedBookModel")(sequelize, Sequelize)
+db.role = require("./publisherModel")(sequelize, Sequelize)
 
 db.role.belongsToMany(db.user, {
-  through: "user_roles",
+  through: "UserRoles",
   foreignKey: "roleID",
   otherKey: "userID",
 })
 
 db.user.belongsToMany(db.role, {
-  through: "user_roles",
+  through: "UserRoles",
   foreignKey: "userID",
   otherKey: "roleID",
 })

@@ -1,25 +1,28 @@
 module.exports = (sequelize, Sequelize) => {
-  const Book = sequelize.define("Book", {
+  const OwnedBook = sequelize.define("OwnedBook", {
     id: {
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    author_id: {
+    user_id: {
       type: Sequelize.STRING,
     },
-    publisher_id: {
+    book_id: {
       type: Sequelize.STRING,
     },
-    genre_id: {
-      type: Sequelize.STRING,
+    when_bought: {
+      type: Sequelize.DATE,
     },
-    category_id: {
-      type: Sequelize.STRING,
+    owned_book_price: {
+      type: Sequelize.DECIMAL,
     },
-    book_details_id: {
+    was_a_gift: {
+      type: Sequelize.BOOLEAN,
+    },
+    comment: {
       type: Sequelize.STRING,
     },
   })
-  return Book
+  return OwnedBook
 }
