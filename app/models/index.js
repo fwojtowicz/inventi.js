@@ -51,6 +51,17 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleID",
 })
 
+db.user.hasMany(db.ownedBook, { foreignKey: "user_id", targetKey: "user_id" })
+db.user.hasMany(db.loan, { foreignKey: "user_id", targetKey: "user_id" })
+db.ownedBook.hasMany(db.loan, {
+  foreignKey: "owned_book_id",
+  targetKey: "owned_book_id",
+})
+db.book.hasMany(db.ownedBook, { foreignKey: "book_id", targetKey: "book_id" })
+
+// db.user.hasMany(db.loan, { foreignKey: "id" })
+// db.loan.hasMany(db.ownedBook, { foreignKey: "id" })
+
 db.ROLES = ["user", "admin"]
 
 module.exports = db

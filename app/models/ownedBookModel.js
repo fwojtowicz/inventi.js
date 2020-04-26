@@ -1,15 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
   const OwnedBook = sequelize.define("OwnedBook", {
-    id: {
+    owned_book_id: {
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
     user_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
     book_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
     when_bought: {
       type: Sequelize.DATE,

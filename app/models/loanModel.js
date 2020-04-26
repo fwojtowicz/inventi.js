@@ -6,10 +6,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
     },
     user_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
     owned_book_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
     when_loaned: {
       type: Sequelize.DATE,
