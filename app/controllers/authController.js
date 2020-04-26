@@ -42,9 +42,10 @@ exports.signup = (req, res) => {
 }
 
 exports.signin = (req, res) => {
+  console.log(req.body)
   User.findOne({
     where: {
-      username: req.body.username,
+      email: req.body.email,
     },
   })
     .then((user) => {
@@ -69,10 +70,12 @@ exports.signin = (req, res) => {
           authorities.push(roles[i].name)
         }
         res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            roles: authorities,
+          },
           accessToken: token,
         })
       })
