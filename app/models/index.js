@@ -59,6 +59,47 @@ db.ownedBook.hasMany(db.loan, {
 })
 db.book.hasMany(db.ownedBook, { foreignKey: "book_id", targetKey: "book_id" })
 
+db.book.belongsToMany(db.author, {
+  through: "BookAuthors",
+  foreignKey: "book_id",
+  otherKey: "author_id",
+})
+
+db.author.belongsToMany(db.book, {
+  through: "BookAuthors",
+  foreignKey: "author_id",
+  otherKey: "book_id",
+})
+
+db.book.belongsToMany(db.genre, {
+  through: "BookGenres",
+  foreignKey: "book_id",
+  otherKey: "genre_id",
+})
+
+db.genre.belongsToMany(db.book, {
+  through: "BookGenres",
+  foreignKey: "genre_id",
+  otherKey: "book_id",
+})
+
+db.category.hasMany(db.book, {
+  foreignKey: "category_id",
+  targetKey: "category_id",
+})
+
+db.bookDetails.hasOne(db.book, {
+  foreignKey: "book_details_id",
+})
+db.book.belongsTo(db.bookDetails, {
+  foreignKey: "book_details_id",
+})
+
+db.publisher.hasMany(db.books, {
+  foreignKey: "publisher_id",
+  targetKey: "publisher_id",
+})
+
 // db.user.hasMany(db.loan, { foreignKey: "id" })
 // db.loan.hasMany(db.ownedBook, { foreignKey: "id" })
 
