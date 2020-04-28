@@ -1,14 +1,14 @@
-const express = require("express")
-const bodyParser = require("body-parser")
-const cors = require("cors")
-const authRoutesLocal = require("./app/routes/authRoutesLocal")
-const authRoutesOAuth = require("./app/routes/authRoutesOAuth")
-const authorRoutes = require("./app/routes/authorRoutes")
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const authRoutesLocal = require('./app/routes/authRoutesLocal')
+const authRoutesOAuth = require('./app/routes/authRoutesOAuth')
+const authorRoutes = require('./app/routes/authorRoutes')
 
-const profileRoutes = require("./app/routes/profileRoutes")
-const cookieSession = require("cookie-session")
-const passport = require("passport")
-require("dotenv").config({ path: ".env" })
+const profileRoutes = require('./app/routes/profileRoutes')
+const cookieSession = require('cookie-session')
+const passport = require('passport')
+require('dotenv').config({ path: '.env' })
 
 const app = express()
 
@@ -47,13 +47,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //   }
 // };
 
-require("./app/routes/authRoutesLocal")(app)
-const passportSetup = require("./app/config/passport.config")
+require('./app/routes/authRoutesLocal')(app)
+const passportSetup = require('./app/config/passport.config')
 
 // require("./app/routes/bookRoutes")(app)
 // require("./app/routes/userRoutes")(app)
 
-app.set("view engine", "ejs")
+app.set('view engine', 'ejs')
 
 app.use(
   cookieSession({
@@ -64,19 +64,20 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use("/api/auth/", authRoutesOAuth)
-app.use("/api/profile/", profileRoutes)
-app.use("/api/authors/", authorRoutes)
+app.use('/api/auth/', authRoutesOAuth)
+app.use('/api/profile/', profileRoutes)
+app.use('/api/authors/', authorRoutes)
 
-app.get("/api", (req, res) => {
-  res.render("home", { user: req.user })
+app.get('/api', (req, res) => {
+  res.render('home', { user: req.user })
 })
 
-const db = require("./app/models")
+const db = require('./app/models')
 const Role = db.role
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({}).then(() => {
   // initial()
+  //force:true
 })
 
 // function initial() {

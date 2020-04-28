@@ -1,11 +1,11 @@
-const db = require("../models")
+const db = require('../models')
 const Book = db.books
 const Op = db.Sequelize.Op
 
 exports.create = (req, res) => {
   if (!req.body.data.isbn) {
     res.status(400).send({
-      message: "isbn is required damn it",
+      message: 'isbn is required damn it',
     })
     return
   }
@@ -28,11 +28,11 @@ exports.create = (req, res) => {
   Book.create(book)
     .then((data) => {
       res.send(data)
-      console.log("SERVER HERE")
+      console.log('SERVER HERE')
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error occured while creating the book",
+        message: err.message || 'Error occured while creating the book',
       })
     })
 }
@@ -47,7 +47,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error occurred while retrieving tutorials",
+        message: err.message || 'Error occurred while retrieving tutorials',
       })
     })
 }
@@ -61,7 +61,7 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving book with ID" + id,
+        message: 'Error retrieving book with ID' + id,
       })
     })
 }
@@ -74,17 +74,17 @@ exports.update = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Book was updated successfully",
+          message: 'Book was updated successfully',
         })
       } else {
         res.send({
-          message: "Cannot update book with id " + id,
+          message: 'Cannot update book with id ' + id,
         })
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating book with id " + id,
+        message: 'Error updating book with id ' + id,
       })
     })
 }
@@ -98,17 +98,17 @@ exports.delete = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Book was deleted successfully",
+          message: 'Book was deleted successfully',
         })
       } else {
         res.send({
-          message: "Cannot delete book with id" + id,
+          message: 'Cannot delete book with id' + id,
         })
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error deleting book with id" + id,
+        message: 'Error deleting book with id' + id,
       })
     })
 }
@@ -123,7 +123,7 @@ exports.deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Error occurred while deleting all books",
+        message: err.message || 'Error occurred while deleting all books',
       })
     })
 }
