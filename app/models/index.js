@@ -95,7 +95,7 @@ db.book.belongsTo(db.bookDetails, {
   foreignKey: "book_details_id",
 })
 
-db.publisher.hasMany(db.books, {
+db.publisher.hasMany(db.book, {
   foreignKey: "publisher_id",
   targetKey: "publisher_id",
 })

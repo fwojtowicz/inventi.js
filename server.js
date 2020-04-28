@@ -3,6 +3,7 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const authRoutesLocal = require("./app/routes/authRoutesLocal")
 const authRoutesOAuth = require("./app/routes/authRoutesOAuth")
+const authorRoutes = require("./app/routes/authorRoutes")
 
 const profileRoutes = require("./app/routes/profileRoutes")
 const cookieSession = require("cookie-session")
@@ -65,6 +66,7 @@ app.use(passport.session())
 
 app.use("/api/auth/", authRoutesOAuth)
 app.use("/api/profile/", profileRoutes)
+app.use("/api/authors/", authorRoutes)
 
 app.get("/api", (req, res) => {
   res.render("home", { user: req.user })
