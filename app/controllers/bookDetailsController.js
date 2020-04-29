@@ -1,5 +1,5 @@
 const db = require('../models')
-const Book = db.books
+const BookDetails = db.bookDetails
 const Op = db.Sequelize.Op
 
 exports.create = (req, res) => {
@@ -11,14 +11,15 @@ exports.create = (req, res) => {
   }
 
   const book = {
-    author_id: req.body.data.author_id,
-    publisher_id: req.body.data.publisher_id,
-    genre_id: req.body.data.genre_id,
-    category_id: req.body.data.category_id,
-    book_details_id: req.body.data.book_details_id,
+    isbn: req.body.data.isbn,
+    title: req.body.data.title,
+    publication_year: req.body.data.publication_year,
+    place_of_publication: req.body.data.place_of_publication,
+    language_of_original: req.body.data.language_of_original,
+    language: req.body.data.language_of_original,
   }
 
-  Book.create(book)
+  BookDetails.create(book)
     .then((data) => {
       res.send(data)
       console.log('SERVER HERE')
@@ -34,7 +35,7 @@ exports.findAll = (req, res) => {
   const title = req.query.title
   var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null
 
-  Book.findAll({ where: condition })
+  BookDetails.findAll({ where: condition })
     .then((data) => {
       res.send(data)
     })
@@ -48,7 +49,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id
 
-  Book.findByPk(id)
+  BookDetails.findByPk(id)
     .then((data) => {
       res.send(data)
     })
@@ -61,7 +62,7 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
   const id = req.params.id
-  Book.update(req.body.data, {
+  BookDetails.update(req.body.data, {
     where: { id: id },
   })
     .then((num) => {
@@ -85,7 +86,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id
 
-  Book.destroy({
+  BookDetails.destroy({
     where: { id: id },
   })
     .then((num) => {
@@ -107,7 +108,7 @@ exports.delete = (req, res) => {
 }
 
 exports.deleteAll = (req, res) => {
-  Book.destroy({
+  BookDetails.destroy({
     where: {},
     truncate: false,
   })

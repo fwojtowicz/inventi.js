@@ -1,19 +1,15 @@
-// module.exports = app => {
-//   const books = require("../controllers/bookController.js");
+const Books = require('../controllers/bookController')
+var router = require('express').Router()
 
-//   var router = require("express").Router();
+router.post('/', Books.create)
 
-//   router.post("/", books.create);
+router.get('/', Books.findAll)
 
-//   router.get("/", books.findAll);
+// router.get('/:id', Books.findOne)
 
-//   router.get("/:id", books.findOne);
+// router.patch('/:id', Books.update)
 
-//   router.patch("/:id", books.update);
+// router.delete('/:id', Books.delete)
 
-//   router.delete("/:id", books.delete);
-
-//   router.delete("/", books.deleteAll);
-
-//   app.use('/api/books', router);
-// };
+// router.delete('/', Books.deleteAll)
+module.exports = router
