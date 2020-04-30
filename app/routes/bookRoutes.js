@@ -7,7 +7,7 @@ router.get('/', Books.findAll)
 
 // router.get('/:id', Books.findOne)
 
-// router.patch('/:id', Books.update)
+router.patch('/:id', Books.update)
 
 // router.delete('/:id', Books.delete)
 
