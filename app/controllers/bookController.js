@@ -6,6 +6,7 @@ const Publisher = db.publisher
 const Genre = db.genre
 const Category = db.category
 const BookDetails = db.bookDetails
+const OwnedBook = db.ownedBook
 const Op = db.Sequelize.Op
 
 exports.create = (req, res) => {
@@ -87,9 +88,21 @@ exports.create = (req, res) => {
               category_id: categoryData[0].dataValues.category_id,
               book_details_id: bookDetailsData[0].dataValues.book_details_id,
             }
-            Book.create(book)
-              .then((books) => {
+            Book.findOrCreate({
+              where: {
+                book_details_id: bookDetailsData[0].dataValues.book_details_id,
+              },
+              defaults: {
+                author_id: authorData[0].dataValues.author_id,
+                publisher_id: publisherData[0].dataValues.publisher_id,
+                genre_id: genreData[0].dataValues.genre_id,
+                category_id: categoryData[0].dataValues.category_id,
+                book_details_id: bookDetailsData[0].dataValues.book_details_id,
+              },
+            })
+              .then((bookData) => {
                 console.log('PROTO', Book.prototype)
+                console.log('Book Data', bookData)
 
                 console.log('Author Data', authorData)
                 console.log('Genre Data', genreData)
@@ -98,44 +111,57 @@ exports.create = (req, res) => {
 
                 if (genreData[0].dataValues.genre_name) {
                   console.log('Genre from Genre Model', genreData[0])
-                  books
+                  bookData[0]
                     .setGenres(genreData[0])
-                    .then(() => console.log('GENRE', books))
+                    .then(() => console.log('GENRE', bookData))
                 }
                 if (authorData[0].dataValues.author_id) {
                   console.log('Author from Author Model', authorData[0])
-                  books
+                  bookData[0]
                     .setAuthors(authorData[0])
-                    .then(() => console.log('AUTHOR', books))
+                    .then(() => console.log('AUTHOR', bookData))
                 }
                 if (categoryData[0].dataValues.category_name) {
                   console.log('Category from Category Model', authorData[0])
-                  books
+                  bookData[0]
                     .setCategory(categoryData[0])
-                    .then(() => console.log('CATEGORY', books))
+                    .then(() => console.log('CATEGORY', bookData))
                 }
                 if (publisherData[0].dataValues.category_id) {
                   console.log(
                     'Publisher from Publisher Model',
                     publisherData[0]
                   )
-                  books
+                  bookData[0]
                     .setPublisher(publisherData[0])
-                    .then(() => console.log('PUBLISHER', books))
+                    .then(() => console.log('PUBLISHER', bookData))
                 }
                 if (bookDetailsData[0].dataValues.book_details_id) {
                   console.log(
                     'Book Details from Book Details Model',
                     bookDetailsData[0]
                   )
-                  books
+                  bookData[0]
                     .setBookDetail(bookDetailsData[0])
-                    .then(() => console.log('BOOKDATA', books))
+                    .then(() => console.log('BOOKDATA', bookData))
                 }
-                console.log('SERVER HERE')
+                console.log('SERVER HERE', bookData)
 
-                res.status(200).send({
-                  message: 'Book Added',
+                OwnedBook.findOrCreate({
+                  where: {
+                    book_id: bookData[0].dataValues.book_id,
+                  },
+                  defaults: {
+                    book_id: bookData[0].dataValues.book_id,
+                    when_bought: req.body.data.when_bought,
+                    owned_book_price: req.body.owned_book_price,
+                    was_a_gift: req.body.data.was_a_gift,
+                    comment: req.body.data.comment,
+                  },
+                }).then((final) => {
+                  res.status(200).send({
+                    message: 'Book Added',
+                  })
                 })
               })
               .catch((err) => {
@@ -180,7 +206,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Error occurred while retrieving tutorials',
+        message: err.message || 'Error occurred while retrieving books',
       })
     })
 }
