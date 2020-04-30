@@ -5,124 +5,150 @@ const Author = db.author
 const Publisher = db.publisher
 const Genre = db.genre
 const Category = db.category
+const BookDetails = db.bookDetails
 const Op = db.Sequelize.Op
 
 exports.create = (req, res) => {
-  // if (!req.body.data.isbn) {
-  //   res.status(400).send({
-  //     message: 'isbn is required damn it',
-  //   })
-  //   return
+  if (!req.body.data.isbn) {
+    res.status(400).send({
+      message: 'isbn is required damn it',
+    })
+    return
+  }
+
+  // const author = {
+  //   author_name: req.body.data.author_name,
+  //   author_surname: req.body.data.author_surname,
+  // }
+  // const publisher = {
+  //   publisher_name: req.body.data.publisher_name,
   // }
 
-  const author = {
-    author_name: req.body.data.author_name,
-    author_surname: req.body.data.author_surname,
-  }
-  const publisher = {
-    publisher_name: req.body.data.publisher_name,
-  }
-
-  const genre = {
-    genre_name: req.body.data.genre_name,
-  }
-  const category = {
-    category_name: req.body.data.category_name,
-  }
-
-  Genre.findOrCreate({
+  // const genre = {
+  //   genre_name: req.body.data.genre_name,
+  // }
+  // const category = {
+  //   category_name: req.body.data.category_name,
+  // }
+  BookDetails.findOrCreate({
     where: {
-      genre_name: req.body.data.genre_name,
+      isbn: req.body.data.isbn,
     },
     defaults: {
-      genre_name: req.body.data.genre_name,
+      isbn: req.body.data.isbn,
+      title: req.body.data.title,
+      publication_year: req.body.data.publication_year,
+      place_of_publication: req.body.data.place_of_publication,
+      language_of_original: req.body.data.language_of_original,
+      language: req.body.data.language_of_original,
     },
-  }).then((genreData) => {
-    Author.findOrCreate({
+  }).then((bookDetailsData) => {
+    Publisher.findOrCreate({
       where: {
-        [Op.and]: [
-          { author_name: req.body.data.author_name },
-          { author_surname: req.body.data.author_surname },
-        ],
+        publisher_name: req.body.data.publisher_name,
       },
       defaults: {
-        author_name: req.body.data.author_name,
-        author_surname: req.body.data.author_surname,
+        publisher_name: req.body.data.publisher_name,
       },
-    }).then((authorData) => {
-      console.log('HEHEHEHHEHEH', authorData[0].dataValues)
-      const authors = []
-      const book = {
-        author_id: authorData[0].dataValues.author_id,
-        publisher_id: req.body.data.publisher_id,
-        genre_id: genreData[0].dataValues.genre_id,
-        // category_id: categoryData.dataValues.category_id,
-        book_details_id: req.body.data.book_details_id,
-      }
-      Book.create(book)
-        .then((books) => {
-          // console.log('PROTO', Book.prototype)
+    }).then((publisherData) => {
+      Category.findOrCreate({
+        where: {
+          category_name: req.body.data.category_name,
+        },
+        defaults: {
+          category_name: req.body.data.category_name,
+        },
+      }).then((categoryData) => {
+        // console.log('DATA', categoryData)
+        Genre.findOrCreate({
+          where: {
+            genre_name: req.body.data.genre_name,
+          },
+          defaults: {
+            genre_name: req.body.data.genre_name,
+          },
+        }).then((genreData) => {
+          Author.findOrCreate({
+            where: {
+              [Op.and]: [
+                { author_name: req.body.data.author_name },
+                { author_surname: req.body.data.author_surname },
+              ],
+            },
+            defaults: {
+              author_name: req.body.data.author_name,
+              author_surname: req.body.data.author_surname,
+            },
+          }).then((authorData) => {
+            const book = {
+              author_id: authorData[0].dataValues.author_id,
+              publisher_id: publisherData[0].dataValues.publisher_id,
+              genre_id: genreData[0].dataValues.genre_id,
+              category_id: categoryData[0].dataValues.category_id,
+              book_details_id: bookDetailsData[0].dataValues.book_details_id,
+            }
+            Book.create(book)
+              .then((books) => {
+                console.log('PROTO', Book.prototype)
 
-          console.log('Author Data', authorData)
-          console.log('Genre Data', genreData)
-          if (genreData[0].dataValues.genre_name) {
-            console.log('Genre from Genre Model', genreData[0])
-            books
-              .setGenres(genreData[0])
-              .then(() => console.log('GENRE', books))
+                console.log('Author Data', authorData)
+                console.log('Genre Data', genreData)
+                console.log('Category Data', categoryData)
+                console.log('Publisher Data', categoryData)
 
-            console.log(
-              'Author Surname',
-              authorData[0].dataValues.author_surname
-            )
-            console.log('Author from Author Model', authorData[0])
-            books
-              .setAuthors(authorData[0])
-              .then(() => console.log('FINAL', books))
+                if (genreData[0].dataValues.genre_name) {
+                  console.log('Genre from Genre Model', genreData[0])
+                  books
+                    .setGenres(genreData[0])
+                    .then(() => console.log('GENRE', books))
+                }
+                if (authorData[0].dataValues.author_id) {
+                  console.log('Author from Author Model', authorData[0])
+                  books
+                    .setAuthors(authorData[0])
+                    .then(() => console.log('AUTHOR', books))
+                }
+                if (categoryData[0].dataValues.category_name) {
+                  console.log('Category from Category Model', authorData[0])
+                  books
+                    .setCategory(categoryData[0])
+                    .then(() => console.log('CATEGORY', books))
+                }
+                if (publisherData[0].dataValues.category_id) {
+                  console.log(
+                    'Publisher from Publisher Model',
+                    publisherData[0]
+                  )
+                  books
+                    .setPublisher(publisherData[0])
+                    .then(() => console.log('PUBLISHER', books))
+                }
+                if (bookDetailsData[0].dataValues.book_details_id) {
+                  console.log(
+                    'Book Details from Book Details Model',
+                    bookDetailsData[0]
+                  )
+                  books
+                    .setBookDetail(bookDetailsData[0])
+                    .then(() => console.log('BOOKDATA', books))
+                }
+                console.log('SERVER HERE')
 
-            // if (authorData[0].dataValues.author_surname) {
-            //   Author.findAll({
-            //     where: {
-            //       [Op.and]: [
-            //         { author_name: req.body.data.author_name },
-            //         { author_surname: req.body.data.author_surname },
-            //       ],
-            //     },
-            //   })
-            // Author.findOrCreate({
-            //   where: {
-            //     [Op.and]: [
-            //       { author_name: req.body.data.author_name },
-            //       { author_surname: req.body.data.author_surname },
-            //     ],
-            //   },
-            //   defaults: {
-            //     author_name: req.body.data.author_name,
-            //     author_surname: req.body.data.author_surname,
-            //   },
-            // })
-            //     .then((author) => {
-            //       console.log('Author from Author Model', author)
-            //       books
-            //         .setAuthors(author)
-            //         .then(() => console.log('FINAL', books))
-            //     })
-            // }
-          }
-          // res.send(data)
-          console.log('SERVER HERE')
-          res.send(200)
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message: err.message || 'Error occured while creating the book',
+                res.status(200).send({
+                  message: 'Book Added',
+                })
+              })
+              .catch((err) => {
+                res.status(500).send({
+                  message:
+                    err.message || 'Error occured while creating the book',
+                })
+              })
           })
         })
+      })
     })
   })
-  // Book.findAll({ include: Author }).then((res) => {
-  //   console.log('HERE', JSON.stringify(res, null, 2))
-  // })
 }
 
 exports.findAll = (req, res) => {
@@ -137,6 +163,15 @@ exports.findAll = (req, res) => {
 
       {
         model: Genre,
+      },
+      {
+        model: Category,
+      },
+      {
+        model: Publisher,
+      },
+      {
+        model: BookDetails,
       },
     ],
   })
@@ -225,7 +260,3 @@ exports.deleteAll = (req, res) => {
       })
     })
 }
-
-// exports.findAllBorrowed = (req,res) => {
-
-// }

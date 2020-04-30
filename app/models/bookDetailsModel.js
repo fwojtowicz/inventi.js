@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const BookDetails = sequelize.define("BookDetails", {
+  const BookDetails = sequelize.define('BookDetails', {
     book_details_id: {
       autoIncrement: true,
       primaryKey: true,
@@ -8,6 +8,10 @@ module.exports = (sequelize, Sequelize) => {
 
     isbn: {
       type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'ISBN is required' },
+      },
     },
     title: {
       type: Sequelize.STRING,

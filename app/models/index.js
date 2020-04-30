@@ -88,6 +88,10 @@ db.category.hasMany(db.book, {
   targetKey: 'category_id',
 })
 
+db.book.belongsTo(db.category, {
+  foreignKey: 'category_id',
+})
+
 db.bookDetails.hasOne(db.book, {
   foreignKey: 'book_details_id',
 })
@@ -98,6 +102,9 @@ db.book.belongsTo(db.bookDetails, {
 db.publisher.hasMany(db.book, {
   foreignKey: 'publisher_id',
   targetKey: 'publisher_id',
+})
+db.book.belongsTo(db.publisher, {
+  foreignKey: 'publisher_id',
 })
 
 // db.user.hasMany(db.loan, { foreignKey: "id" })
