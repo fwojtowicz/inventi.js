@@ -30,13 +30,32 @@ exports.create = (req, res) => {
     category_name: req.body.data.category_name,
   }
 
-  Genre.create(genre).then((genreData) => {
-    Author.create(author).then((authorData) => {
+  Genre.findOrCreate({
+    where: {
+      genre_name: req.body.data.genre_name,
+    },
+    defaults: {
+      genre_name: req.body.data.genre_name,
+    },
+  }).then((genreData) => {
+    Author.findOrCreate({
+      where: {
+        [Op.and]: [
+          { author_name: req.body.data.author_name },
+          { author_surname: req.body.data.author_surname },
+        ],
+      },
+      defaults: {
+        author_name: req.body.data.author_name,
+        author_surname: req.body.data.author_surname,
+      },
+    }).then((authorData) => {
+      console.log('HEHEHEHHEHEH', authorData[0].dataValues)
       const authors = []
       const book = {
-        author_id: authorData.dataValues.author_id,
+        author_id: authorData[0].dataValues.author_id,
         publisher_id: req.body.data.publisher_id,
-        genre_id: genreData.dataValues.genre_id,
+        genre_id: genreData[0].dataValues.genre_id,
         // category_id: categoryData.dataValues.category_id,
         book_details_id: req.body.data.book_details_id,
       }
@@ -46,46 +65,49 @@ exports.create = (req, res) => {
 
           console.log('Author Data', authorData)
           console.log('Genre Data', genreData)
-          if (genreData.dataValues.genre_name) {
-            Genre.findAll({
-              where: { genre_name: req.body.data.genre_name },
-            }).then((genre) => {
-              console.log('Genre from Genre Model', genre)
-              books.setGenres(genre).then(() => console.log('CAT', books))
+          if (genreData[0].dataValues.genre_name) {
+            console.log('Genre from Genre Model', genreData[0])
+            books
+              .setGenres(genreData[0])
+              .then(() => console.log('GENRE', books))
 
-              console.log(
-                'Author Surname',
-                authorData.dataValues.author_surname
-              )
-              if (authorData.dataValues.author_surname) {
-                Author.findAll({
-                  where: {
-                    [Op.and]: [
-                      { author_name: req.body.data.author_name },
-                      { author_surname: req.body.data.author_surname },
-                    ],
-                  },
-                })
-                  // Author.findOrCreate({
-                  //   where: {
-                  //     [Op.and]: [
-                  //       { author_name: req.body.data.author_name },
-                  //       { author_surname: req.body.data.author_surname },
-                  //     ],
-                  //   },
-                  //   defaults: {
-                  //     author_name: req.body.data.author_name,
-                  //     author_surname: req.body.data.author_surname,
-                  //   },
-                  // })
-                  .then((author) => {
-                    console.log('Author from Author Model', author)
-                    books
-                      .setAuthors(author)
-                      .then(() => console.log('FINAL', books))
-                  })
-              }
-            })
+            console.log(
+              'Author Surname',
+              authorData[0].dataValues.author_surname
+            )
+            console.log('Author from Author Model', authorData[0])
+            books
+              .setAuthors(authorData[0])
+              .then(() => console.log('FINAL', books))
+
+            // if (authorData[0].dataValues.author_surname) {
+            //   Author.findAll({
+            //     where: {
+            //       [Op.and]: [
+            //         { author_name: req.body.data.author_name },
+            //         { author_surname: req.body.data.author_surname },
+            //       ],
+            //     },
+            //   })
+            // Author.findOrCreate({
+            //   where: {
+            //     [Op.and]: [
+            //       { author_name: req.body.data.author_name },
+            //       { author_surname: req.body.data.author_surname },
+            //     ],
+            //   },
+            //   defaults: {
+            //     author_name: req.body.data.author_name,
+            //     author_surname: req.body.data.author_surname,
+            //   },
+            // })
+            //     .then((author) => {
+            //       console.log('Author from Author Model', author)
+            //       books
+            //         .setAuthors(author)
+            //         .then(() => console.log('FINAL', books))
+            //     })
+            // }
           }
           // res.send(data)
           console.log('SERVER HERE')
@@ -111,7 +133,6 @@ exports.findAll = (req, res) => {
     include: [
       {
         model: Author,
-        through: { where: condition },
       },
 
       {
