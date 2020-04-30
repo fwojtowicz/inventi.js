@@ -1,14 +1,16 @@
 const db = require('../models')
-const Book = db.books
+const Book = db.book
+const config = require('../config/auth.config')
+const Author = db.author
 const Op = db.Sequelize.Op
 
 exports.create = (req, res) => {
-  if (!req.body.data.isbn) {
-    res.status(400).send({
-      message: 'isbn is required damn it',
-    })
-    return
-  }
+  // if (!req.body.data.isbn) {
+  //   res.status(400).send({
+  //     message: 'isbn is required damn it',
+  //   })
+  //   return
+  // }
 
   const book = {
     author_id: req.body.data.author_id,
@@ -19,8 +21,18 @@ exports.create = (req, res) => {
   }
 
   Book.create(book)
-    .then((data) => {
-      res.send(data)
+    .then((books) => {
+      console.log(Book.prototype)
+      console.log('DAYA', books.dataValues.author_id)
+      if (books.dataValues.author_id) {
+        Author.findAll({
+          where: { author_id: books.dataValues.author_id },
+        }).then((author) => {
+          console.log('AUHOOOR', author)
+          books.setAuthors(author).then(() => console.log('FINAL', books))
+        })
+      }
+      // res.send(data)
       console.log('SERVER HERE')
     })
     .catch((err) => {
@@ -28,6 +40,10 @@ exports.create = (req, res) => {
         message: err.message || 'Error occured while creating the book',
       })
     })
+
+  // Book.findAll({ include: Author }).then((res) => {
+  //   console.log('HERE', JSON.stringify(res, null, 2))
+  // })
 }
 
 exports.findAll = (req, res) => {
