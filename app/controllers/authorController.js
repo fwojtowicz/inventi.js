@@ -6,15 +6,15 @@ const Op = db.Sequelize.Op
 exports.create = (req, res) => {
   if (!req.body.data.author_name) {
     res.status(400).send({
-      message: 'Author name is needen',
+      message: 'Author name is needed',
     })
     return
   }
 
-  const author = {
-    author_name: req.body.data.author_name,
-    author_surname: req.body.data.author_surname,
-  }
+  // const author = {
+  //   author_name: req.body.data.author_name,
+  //   author_surname: req.body.data.author_surname,
+  // }
 
   Author.findOrCreate({
     where: {

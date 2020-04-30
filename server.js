@@ -85,7 +85,7 @@ app.get('/api', (req, res) => {
 const db = require('./app/models')
 const Role = db.role
 
-db.sequelize.sync({}).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   // initial()
   //force:true
 })

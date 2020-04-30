@@ -12,35 +12,55 @@ exports.create = (req, res) => {
   //   return
   // }
 
-  const book = {
-    author_id: req.body.data.author_id,
-    publisher_id: req.body.data.publisher_id,
-    genre_id: req.body.data.genre_id,
-    category_id: req.body.data.category_id,
-    book_details_id: req.body.data.book_details_id,
+  const author = {
+    author_name: req.body.data.author_name,
+    author_surname: req.body.data.author_surname,
   }
+  Author.create(author).then((authorData) => {
+    const book = {
+      author_id: authorData.dataValues.author_id,
+      publisher_id: req.body.data.publisher_id,
+      genre_id: req.body.data.genre_id,
+      category_id: req.body.data.category_id,
+      book_details_id: req.body.data.book_details_id,
+    }
+    Book.create(book)
+      .then((books) => {
+        console.log('DUUUPA', authorData)
 
-  Book.create(book)
-    .then((books) => {
-      console.log(Book.prototype)
-      console.log('DAYA', books.dataValues.author_id)
-      if (books.dataValues.author_id) {
-        Author.findAll({
-          where: { author_id: books.dataValues.author_id },
-        }).then((author) => {
-          console.log('AUHOOOR', author)
-          books.setAuthors(author).then(() => console.log('FINAL', books))
-        })
-      }
-      // res.send(data)
-      console.log('SERVER HERE')
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Error occured while creating the book',
+        // console.log(Book.prototype)
+        console.log('Author ID', authorData.dataValues.author_surname)
+        if (authorData.dataValues.author_surname) {
+          Author.findAll({
+            where: { author_surname: req.body.data.author_surname },
+          })
+            // Author.findOrCreate({
+            //   where: {
+            //     [Op.and]: [
+            //       { author_name: req.body.data.author_name },
+            //       { author_surname: req.body.data.author_surname },
+            //     ],
+            //   },
+            //   defaults: {
+            //     author_name: req.body.data.author_name,
+            //     author_surname: req.body.data.author_surname,
+            //   },
+            // })
+            .then((author) => {
+              console.log('Author from Author Model', author)
+              books.setAuthors(author).then(() => console.log('FINAL', books))
+            })
+        }
+        // res.send(data)
+        console.log('SERVER HERE')
+        res.send(200)
       })
-    })
-
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || 'Error occured while creating the book',
+        })
+      })
+  })
   // Book.findAll({ include: Author }).then((res) => {
   //   console.log('HERE', JSON.stringify(res, null, 2))
   // })
@@ -50,7 +70,14 @@ exports.findAll = (req, res) => {
   const title = req.query.title
   var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null
 
-  Book.findAll({ where: condition })
+  Book.findAll({
+    include: [
+      {
+        model: Author,
+        through: { where: condition },
+      },
+    ],
+  })
     .then((data) => {
       res.send(data)
     })
