@@ -60,23 +60,22 @@ exports.create = (req, res) => {
               })
                 .then((genreData) => {
                   const testauthors = [req.body.data.authors]
-                  // Author.findOrCreate({
-                  //   where: {
-                  //     [Op.and]: [
-                  //       { author_name: req.body.data.author_name },
-                  //       { author_surname: req.body.data.author_surname },
-                  //     ],
-                  //   },
-                  //   defaults: {
-                  //     author_name: req.body.data.author_name,
-                  //     author_surname: req.body.data.author_surname,
-                  //   },
-                  // })
-
-                  Author.bulkCreate(testauthors[0], {
-                    returning: 'uniqueNameSurname',
-                    ignoreDuplicates: true,
+                  Author.findOrCreate({
+                    where: {
+                      [Op.and]: [
+                        { author_name: req.body.data.author_name },
+                        { author_surname: req.body.data.author_surname },
+                      ],
+                    },
+                    defaults: {
+                      author_name: req.body.data.author_name,
+                      author_surname: req.body.data.author_surname,
+                    },
                   })
+
+                    // Author.bulkCreate(testauthors[0], {
+                    //   ignoreDuplicates: ['author_name', 'author_surname'],
+                    // })
                     .then((authorData) => {
                       console.log('TESTAUTHORS', testauthors)
                       // const book = {
@@ -123,7 +122,7 @@ exports.create = (req, res) => {
                             //   authorData[0]
                             // )
                             bookData[0]
-                              .setAuthors(authorData)
+                              .addAuthor(authorData)
                               .then(() => console.log('AUTHOR', bookData))
                           }
                           if (categoryData[0].dataValues.category_name) {
