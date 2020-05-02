@@ -8,9 +8,16 @@ module.exports = (sequelize, Sequelize) => {
 
     isbn: {
       type: Sequelize.STRING,
+      unique: { msg: 'ISBN already exists' },
       allowNull: false,
       validate: {
         notNull: { msg: 'ISBN is required' },
+        isNumeric: { msg: 'ISBN is not numerical' },
+        len: {
+          args: [10, 13],
+          msg:
+            'ISBN must be between 10 (ISBN-10) to 13 (ISBN-13) numerical characters long',
+        },
       },
     },
     title: {

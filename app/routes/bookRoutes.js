@@ -9,7 +9,7 @@ router.get('/', Books.findAll)
 
 router.patch('/:id', Books.update)
 
-// router.delete('/:id', Books.delete)
+router.delete('/:id', Books.delete)
 
 // router.delete('/', Books.deleteAll)
 module.exports = router
