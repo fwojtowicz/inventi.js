@@ -59,19 +59,26 @@ exports.create = (req, res) => {
                 },
               })
                 .then((genreData) => {
-                  Author.findOrCreate({
-                    where: {
-                      [Op.and]: [
-                        { author_name: req.body.data.author_name },
-                        { author_surname: req.body.data.author_surname },
-                      ],
-                    },
-                    defaults: {
-                      author_name: req.body.data.author_name,
-                      author_surname: req.body.data.author_surname,
-                    },
+                  const testauthors = [req.body.data.authors]
+                  // Author.findOrCreate({
+                  //   where: {
+                  //     [Op.and]: [
+                  //       { author_name: req.body.data.author_name },
+                  //       { author_surname: req.body.data.author_surname },
+                  //     ],
+                  //   },
+                  //   defaults: {
+                  //     author_name: req.body.data.author_name,
+                  //     author_surname: req.body.data.author_surname,
+                  //   },
+                  // })
+
+                  Author.bulkCreate(testauthors[0], {
+                    returning: 'uniqueNameSurname',
+                    ignoreDuplicates: true,
                   })
                     .then((authorData) => {
+                      console.log('TESTAUTHORS', testauthors)
                       // const book = {
                       // author_id: authorData[0].dataValues.author_id,
                       // publisher_id: publisherData[0].dataValues.publisher_id,
@@ -96,8 +103,8 @@ exports.create = (req, res) => {
                         },
                       })
                         .then((bookData) => {
-                          // console.log('PROTO', Book.prototype)
-                          // console.log('USERPROTO', User.prototype)
+                          console.log('PROTO', Book.prototype)
+                          console.log('USERPROTO', User.prototype)
                           // console.log('Book Data', bookData)
                           // console.log('Author Data', authorData)
                           // console.log('Genre Data', genreData)
@@ -116,7 +123,7 @@ exports.create = (req, res) => {
                             //   authorData[0]
                             // )
                             bookData[0]
-                              .setAuthors(authorData[0])
+                              .setAuthors(authorData)
                               .then(() => console.log('AUTHOR', bookData))
                           }
                           if (categoryData[0].dataValues.category_name) {
