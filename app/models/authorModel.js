@@ -8,12 +8,10 @@ module.exports = (sequelize, Sequelize) => {
 
     author_name: {
       type: Sequelize.STRING,
-      unique: 'uniqueNameSurname',
     },
 
     author_surname: {
       type: Sequelize.STRING,
-      unique: 'uniqueNameSurname',
     },
   })
   return Author

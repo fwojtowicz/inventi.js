@@ -2,6 +2,7 @@ const db = require('../models')
 const config = require('../config/auth.config')
 const Genre = db.genre
 const Op = db.Sequelize.Op
+const Book = db.book
 
 exports.create = (req, res) => {
   if (!req.body.data.genre_name) {
@@ -9,10 +10,6 @@ exports.create = (req, res) => {
       message: 'Genre name is needed',
     })
     return
-  }
-
-  const genre_name = {
-    genre_name: req.body.data.genre_name,
   }
 
   Genre.findOrCreate({
@@ -23,13 +20,22 @@ exports.create = (req, res) => {
       genre_name: req.body.data.genre_name,
     },
   })
-    .then((data) => {
-      res.send(data)
-      console.log('SERVER HERE')
+    .then((genreData) => {
+      Book.findOne({
+        where: {
+          book_id: req.body.data.book_id,
+        },
+      }).then((bookData) => {
+        console.log(genreData[0])
+        bookData
+          .addGenre(genreData[0])
+          .then(() => console.log('ADDITIONAL GENRE', bookData))
+        res.send(bookData)
+      })
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Error occured while creating a genre',
+        message: err.message || 'Error occured while adding a genre',
       })
     })
 }
