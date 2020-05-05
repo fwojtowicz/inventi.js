@@ -5,7 +5,7 @@ router.post('/', Books.create)
 
 router.get('/', Books.findAll)
 
-// router.get('/:id', Books.findOne)
+router.get('/:id', Books.findOne)
 
 router.patch('/:id', Books.update)
 

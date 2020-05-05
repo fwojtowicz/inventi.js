@@ -8,10 +8,10 @@ module.exports = (sequelize, Sequelize) => {
 
     isbn: {
       type: Sequelize.STRING,
-      unique: { msg: 'ISBN already exists' },
+      // unique: { msg: 'ISBN already exists' },
       allowNull: false,
       validate: {
-        notNull: { msg: 'ISBN is required' },
+        // notNull: { msg: 'ISBN is required' },
         isNumeric: { msg: 'ISBN is not numerical' },
         len: {
           args: [10, 13],
@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
     },
     title: {
       type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Title is required' },
+      },
     },
     language: {
       type: Sequelize.STRING,

@@ -32,6 +32,9 @@ exports.create = (req, res) => {
     },
   })
     .then((bookDetailsData) => {
+      if (!bookDetailsData) {
+        throw new Error('Book details error')
+      }
       Publisher.findOrCreate({
         where: {
           publisher_name: req.body.data.publisher_name,
@@ -41,6 +44,9 @@ exports.create = (req, res) => {
         },
       })
         .then((publisherData) => {
+          if (!publisherData) {
+            throw new Error('Publisher details error')
+          }
           Category.findOrCreate({
             where: {
               category_name: req.body.data.category_name,
@@ -50,6 +56,9 @@ exports.create = (req, res) => {
             },
           })
             .then((categoryData) => {
+              if (!categoryData) {
+                throw new Error('Category error')
+              }
               Genre.findOrCreate({
                 where: {
                   genre_name: req.body.data.genre_name,
@@ -59,15 +68,9 @@ exports.create = (req, res) => {
                 },
               })
                 .then((genreData) => {
-                  // const testauthors = [req.body.data.authors]
-
-                  // Author.findAll({
-                  //   where: {
-                  //     author_name: {
-                  //       [Op.or]: req.body.data.author_names,
-                  //     },
-                  //   },
-                  // })
+                  if (!genreData) {
+                    throw new Error('Genre details error')
+                  }
                   Author.findOrCreate({
                     where: {
                       [Op.and]: [
@@ -80,20 +83,12 @@ exports.create = (req, res) => {
                       author_surname: req.body.data.author_surname,
                     },
                   })
-
-                    // Author.bulkCreate(testauthors[0], {
-                    //   ignoreDuplicates: ['author_name', 'author_surname'],
-                    // })
                     .then((authorData) => {
-                      console.log('TESTAUTHORS', authorData)
-                      // const book = {
-                      // author_id: authorData[0].dataValues.author_id,
-                      // publisher_id: publisherData[0].dataValues.publisher_id,
-                      // genre_id: genreData[0].dataValues.genre_id,
-                      // category_id: categoryData[0].dataValues.category_id,
-                      // book_details_id:
-                      //   bookDetailsData[0].dataValues.book_details_id,
-                      // }
+                      if (!authorData) {
+                        throw new Error('Author details error')
+                      }
+                      // console.log('TESTAUTHORS', authorData)
+
                       Book.findOrCreate({
                         where: {
                           book_details_id:
@@ -110,8 +105,8 @@ exports.create = (req, res) => {
                         },
                       })
                         .then((bookData) => {
-                          console.log('PROTO', Book.prototype)
-                          console.log('USERPROTO', User.prototype)
+                          // console.log('PROTO', Book.prototype)
+                          // console.log('USERPROTO', User.prototype)
                           // console.log('Book Data', bookData)
                           // console.log('Author Data', authorData)
                           // console.log('Genre Data', genreData)
@@ -279,60 +274,117 @@ exports.findAll = (req, res) => {
 }
 
 exports.findOne = (req, res) => {
+  console.log('FINDONE')
   const id = req.params.id
+  console.log('ID', id)
 
-  OwnedBook.findByPk({
-    id,
-    include: [
-      {
-        model: Author,
-      },
+  OwnedBook.findByPk(
+    id
 
-      {
-        model: Genre,
-      },
-      {
-        model: Category,
-      },
-      {
-        model: Publisher,
-      },
-      {
-        model: BookDetails,
-      },
-    ],
-  })
+    // include: [
+    //   {
+    //     model: Author,
+    //   },
+
+    //   {
+    //     model: Genre,
+    //   },
+    //   {
+    //     model: Category,
+    //   },
+    //   {
+    //     model: Publisher,
+    //   },
+    //   {
+    //     model: BookDetails,
+    //   },
+    // ],
+  )
     .then((data) => {
       res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving book with ID' + id,
+        message: 'Error retrieving owned book with ID' + id,
       })
     })
 }
 
 exports.update = (req, res) => {
   const id = req.params.id
-  Book.update(req.body.data, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: 'Book was updated successfully',
-        })
-      } else {
-        res.send({
-          message: 'Cannot update book with id ' + id,
-        })
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: 'Error updating book with id ' + id,
+
+  OwnedBook.update(
+    {
+      when_bought: req.body.data.when_bought,
+      owned_book_price: req.body.data.owned_book_price,
+      was_a_gift: req.body.data.was_a_gift,
+      comment: req.body.data.comment,
+    },
+    {
+      where: { owned_book_id: id },
+    }
+  )
+
+  OwnedBook.findByPk(id)
+    .then((ownedBookData) => {
+      console.log(ownedBookData)
+      Book.findByPk(ownedBookData.dataValues.book_id).then((bookData) => {
+        BookDetails.update(
+          {
+            isbn: req.body.data.isbn,
+            title: req.body.data.title,
+            publication_year: req.body.data.publication_year,
+            place_of_publication: req.body.data.place_of_publication,
+            language_of_original: req.body.data.language_of_original,
+            language: req.body.data.language_of_original,
+          },
+          { where: { book_details_id: bookData.dataValues.book_details_id } }
+        )
+        Author.update(
+          {
+            author_name: req.body.data.author_name,
+            author_surname: req.body.data.author_surname,
+          },
+          { where: { author_id: bookData.dataValues.author_id } }
+        )
+        Publisher.update(
+          { publisher_name: req.body.data.publisher_name },
+          { where: { publisher_id: bookData.dataValues.publisher_id } }
+        )
+        Genre.update(
+          { genre_name: req.body.data.genre_name },
+          { where: { genre_id: bookData.dataValues.genre_id } }
+        )
+        Category.update(
+          { category_name: req.body.data.category_name },
+          { where: { category_id: bookData.dataValues.category_id } }
+        )
       })
     })
+    .then(res.send({ message: 'Owned Book updated successfully' }))
+    .catch((err) => {
+      res.send({ message: err })
+    })
+
+  // Book.update(req.body.data, {
+  //   where: { id: id },
+  // })
+  //   .then((num) => {
+  //     if (num == 1) {
+  //       res.send({
+  //         message: 'Book was updated successfully',
+  //       })
+  //     } else {
+  //       res.send({
+  //         message: 'Cannot update book with id ' + id,
+  //       })
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message: 'Error updating book with id ' + id,
+  //     })
+  // })
 }
 
 exports.delete = (req, res) => {
