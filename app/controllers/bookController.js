@@ -59,7 +59,15 @@ exports.create = (req, res) => {
                 },
               })
                 .then((genreData) => {
-                  const testauthors = [req.body.data.authors]
+                  // const testauthors = [req.body.data.authors]
+
+                  // Author.findAll({
+                  //   where: {
+                  //     author_name: {
+                  //       [Op.or]: req.body.data.author_names,
+                  //     },
+                  //   },
+                  // })
                   Author.findOrCreate({
                     where: {
                       [Op.and]: [
@@ -77,7 +85,7 @@ exports.create = (req, res) => {
                     //   ignoreDuplicates: ['author_name', 'author_surname'],
                     // })
                     .then((authorData) => {
-                      console.log('TESTAUTHORS', testauthors)
+                      console.log('TESTAUTHORS', authorData)
                       // const book = {
                       // author_id: authorData[0].dataValues.author_id,
                       // publisher_id: publisherData[0].dataValues.publisher_id,
@@ -122,7 +130,7 @@ exports.create = (req, res) => {
                             //   authorData[0]
                             // )
                             bookData[0]
-                              .addAuthor(authorData)
+                              .setAuthors(authorData[0])
                               .then(() => console.log('AUTHOR', bookData))
                           }
                           if (categoryData[0].dataValues.category_name) {

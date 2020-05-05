@@ -2,6 +2,7 @@ const db = require('../models')
 const config = require('../config/auth.config')
 const Author = db.author
 const Op = db.Sequelize.Op
+const Book = db.book
 
 exports.create = (req, res) => {
   if (!req.body.data.author_name) {
@@ -28,13 +29,22 @@ exports.create = (req, res) => {
       author_surname: req.body.data.author_surname,
     },
   })
-    .then((data) => {
-      res.send(data)
-      console.log('SERVER HERE')
+    .then((authorData) => {
+      Book.findOne({
+        where: {
+          book_id: req.body.data.book_id,
+        },
+      }).then((bookData) => {
+        console.log(bookData)
+        bookData
+          .addAuthor(authorData[0])
+          .then(() => console.log('ADDITIONAL AUTHOR', bookData))
+        res.send(bookData)
+      })
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Error occured while creating an author',
+        message: err.message || 'Error occured while adding an author',
       })
     })
 }
