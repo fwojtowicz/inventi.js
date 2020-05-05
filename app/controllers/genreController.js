@@ -40,21 +40,6 @@ exports.create = (req, res) => {
     })
 }
 
-// exports.findOne = (req, res) => {
-//   const id = req.params.id
-
-//   Author.findByPk(id)
-//     .then((data) => {
-//       if (!data.body) res.status(404)
-//       res.send(data)
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: 'Error retrieving author with ID' + id,
-//       })
-//     })
-// }
-
 exports.update = (req, res) => {
   const id = req.params.id
   Genre.update(req.body.data, {
@@ -63,17 +48,17 @@ exports.update = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Category was updated successfully',
+          message: 'Genre was updated successfully',
         })
       } else {
         res.send({
-          message: 'Cannot update category with id ' + id,
+          message: 'Cannot update genre with id ' + id,
         })
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error updating category with id ' + id,
+        message: 'Error updating genre with id ' + id,
       })
     })
 }

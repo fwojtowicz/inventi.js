@@ -11,9 +11,9 @@ const Op = db.Sequelize.Op
 const User = db.user
 
 exports.create = (req, res) => {
-  if (!req.body.data.isbn) {
+  if (!req.body.data.title) {
     res.status(400).send({
-      message: 'ISBN is required',
+      message: 'Title is required',
     })
     return
   }
@@ -259,6 +259,23 @@ exports.findAll = (req, res) => {
         include: [
           {
             model: Book,
+            include: [
+              {
+                model: Author,
+              },
+              {
+                model: Genre,
+              },
+              {
+                model: Category,
+              },
+              {
+                model: Publisher,
+              },
+              {
+                model: BookDetails,
+              },
+            ],
           },
         ],
       })
@@ -278,14 +295,11 @@ exports.findOne = (req, res) => {
   const id = req.params.id
   console.log('ID', id)
 
-  OwnedBook.findByPk(
-    id
-
+  OwnedBook.findByPk(id, {
     // include: [
     //   {
     //     model: Author,
     //   },
-
     //   {
     //     model: Genre,
     //   },
@@ -299,13 +313,16 @@ exports.findOne = (req, res) => {
     //     model: BookDetails,
     //   },
     // ],
-  )
+  })
     .then((data) => {
+      if (!data) {
+        res.status(404)
+      }
       res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving owned book with ID' + id,
+        message: 'Error retrieving owned book with ID ' + id,
       })
     })
 }
@@ -336,7 +353,7 @@ exports.update = (req, res) => {
             publication_year: req.body.data.publication_year,
             place_of_publication: req.body.data.place_of_publication,
             language_of_original: req.body.data.language_of_original,
-            language: req.body.data.language_of_original,
+            language: req.body.data.language,
           },
           { where: { book_details_id: bookData.dataValues.book_details_id } }
         )
@@ -365,26 +382,6 @@ exports.update = (req, res) => {
     .catch((err) => {
       res.send({ message: err })
     })
-
-  // Book.update(req.body.data, {
-  //   where: { id: id },
-  // })
-  //   .then((num) => {
-  //     if (num == 1) {
-  //       res.send({
-  //         message: 'Book was updated successfully',
-  //       })
-  //     } else {
-  //       res.send({
-  //         message: 'Cannot update book with id ' + id,
-  //       })
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message: 'Error updating book with id ' + id,
-  //     })
-  // })
 }
 
 exports.delete = (req, res) => {
@@ -395,7 +392,7 @@ exports.delete = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Owned book with id ' + id + 'was deleted successfully',
+          message: 'Owned book with id ' + id + ' was deleted successfully',
         })
       } else {
         res.send({
@@ -409,18 +406,3 @@ exports.delete = (req, res) => {
       })
     })
 }
-
-// exports.deleteAll = (req, res) => {
-//   Book.destroy({
-//     where: {},
-//     truncate: false,
-//   })
-//     .then((nums) => {
-//       res.send({ message: `{nums} Books were deleted successfully` })
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || 'Error occurred while deleting all books',
-//       })
-//     })
-// }
