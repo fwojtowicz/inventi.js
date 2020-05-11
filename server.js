@@ -1,16 +1,17 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-// const authRoutesLocal = require('./app/routes/authRoutesLocal')
 const authRoutesOAuth = require('./app/routes/authRoutesOAuth')
 const authorRoutes = require('./app/routes/authorRoutes')
-// const publisherRoutes = require('./app/routes/publisherRoutes')
 const genreRoutes = require('./app/routes/genreRoutes')
+const bookRoutes = require('./app/routes/bookRoutes')
+const loanRoutes = require('./app/routes/loanRoutes')
+const profileRoutes = require('./app/routes/profileRoutes')
 // const categoryRoutes = require('./app/routes/categoryRoutes')
 // const bookDetailsRoutes = require('./app/routes/bookDetailsRoutes')
-const bookRoutes = require('./app/routes/bookRoutes')
+// const publisherRoutes = require('./app/routes/publisherRoutes')
+// const authRoutesLocal = require('./app/routes/authRoutesLocal')
 
-const profileRoutes = require('./app/routes/profileRoutes')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
 require('dotenv').config({ path: '.env' })
@@ -77,6 +78,7 @@ app.use('/api/genres/', genreRoutes)
 // app.use('/api/categories/', categoryRoutes)
 // app.use('/api/bookdetails/', bookDetailsRoutes)
 app.use('/api/books/', bookRoutes)
+app.use('/api/loans/', loanRoutes)
 
 app.get('/api', (req, res) => {
   res.render('home', { user: req.user })
@@ -93,11 +95,11 @@ db.sequelize.sync({}).then(() => {
 // function initial() {
 //   Role.create({
 //     id: 1,
-//     name: "user",
+//     name: 'user',
 //   })
 //   Role.create({
 //     id: 2,
-//     name: "admin",
+//     name: 'admin',
 //   })
 // }
 

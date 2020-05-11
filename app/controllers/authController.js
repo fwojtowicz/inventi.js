@@ -1,12 +1,12 @@
-const db = require("../models")
-const config = require("../config/auth.config")
+const db = require('../models')
+const config = require('../config/auth.config')
 const User = db.user
 const Role = db.role
 
 const Op = db.Sequelize.Op
 
-var jwt = require("jsonwebtoken")
-var bcrypt = require("bcryptjs")
+var jwt = require('jsonwebtoken')
+var bcrypt = require('bcryptjs')
 
 exports.signup = (req, res) => {
   User.create({
@@ -26,13 +26,13 @@ exports.signup = (req, res) => {
         }).then((roles) => {
           user.setRoles(roles).then(() => {
             res.send({
-              message: "User registered successfully [roles provided]",
+              message: 'User registered successfully [roles provided]',
             })
           })
         })
       } else {
         user.setRoles([1]).then(() => {
-          res.send({ message: "User registered successfully" })
+          res.send({ message: 'User registered successfully' })
         })
       }
     })
@@ -50,13 +50,13 @@ exports.signin = (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: "User not found" })
+        return res.status(404).send({ message: 'User not found' })
       }
       var passwordValid = bcrypt.compareSync(req.body.password, user.password)
       if (!passwordValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid password",
+          message: 'Invalid password',
         })
       }
 
@@ -70,12 +70,14 @@ exports.signin = (req, res) => {
           authorities.push(roles[i].name)
         }
         res.status(200).send({
-          user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            roles: authorities,
-          },
+          newUser: [
+            {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              roles: authorities,
+            },
+          ],
           accessToken: token,
         })
       })

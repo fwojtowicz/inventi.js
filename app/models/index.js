@@ -59,6 +59,10 @@ db.ownedBook.hasMany(db.loan, {
   foreignKey: 'owned_book_id',
   targetKey: 'owned_book_id',
 })
+
+db.loan.belongsTo(db.user, { foreignKey: 'user_id' })
+db.loan.belongsTo(db.ownedBook, { foreignKey: 'owned_book_id' })
+
 db.book.hasMany(db.ownedBook, { foreignKey: 'book_id', targetKey: 'book_id' })
 db.ownedBook.belongsTo(db.book, { foreignKey: 'book_id' })
 

@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Loan = sequelize.define('Loan', {
-    id: {
+    loan_id: {
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,

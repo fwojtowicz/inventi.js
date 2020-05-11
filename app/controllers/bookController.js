@@ -251,7 +251,7 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   const title = req.query.title
   var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null
-  const userID = req.body.data.user_id
+  const userID = req.user_id
 
   User.findByPk(userID).then((userData) => {
     userData
