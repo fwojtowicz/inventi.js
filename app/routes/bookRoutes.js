@@ -12,15 +12,15 @@ const authCheck = (req, res, next) => {
     next()
   }
 }
-router.post('/', Books.create)
+router.post('/', authCheck, Books.create)
 
 router.get('/', authCheck, Books.findAll)
 
-router.get('/:id', Books.findOne)
+router.get('/:id', authCheck, Books.findOne)
 
-router.patch('/:id', Books.update)
+router.patch('/:id', authCheck, Books.update)
 
-router.delete('/:id', Books.delete)
+router.delete('/:id', authCheck, Books.delete)
 
 // router.delete('/', Books.deleteAll)
 module.exports = router

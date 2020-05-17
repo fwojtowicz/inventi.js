@@ -8,14 +8,15 @@ verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token']
   if (!token) {
     return res.status(401).send({
-      message: 'Unauthorized - no token',
+      message: 'Unauthorized - no token'
     })
   }
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
       // return res.redirect("/api/auth/login")
       return res.status(401).send({
-        message: 'Unauthorized',
+        error: err,
+        message: 'Unauthorized'
       })
     }
     console.log('DECODED', decoded)
@@ -36,7 +37,7 @@ isAdmin = (req, res, next) => {
         }
       }
       res.status(403).send({
-        message: 'Require Admin Role!',
+        message: 'Require Admin Role!'
       })
       return
     })
@@ -45,7 +46,7 @@ isAdmin = (req, res, next) => {
 
 const authJWT = {
   verifyToken: verifyToken,
-  isAdmin: isAdmin,
+  isAdmin: isAdmin
 }
 
 module.exports = authJWT

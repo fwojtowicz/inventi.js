@@ -7,20 +7,21 @@ const Genre = db.genre
 const Category = db.category
 const BookDetails = db.bookDetails
 const OwnedBook = db.ownedBook
+const Loan = db.loan
 const Op = db.Sequelize.Op
 const User = db.user
 
 exports.create = (req, res) => {
   if (!req.body.data.title) {
     res.status(400).send({
-      message: 'Title is required',
+      message: 'Title is required'
     })
     return
   }
 
   BookDetails.findOrCreate({
     where: {
-      isbn: req.body.data.isbn,
+      isbn: req.body.data.isbn
     },
     defaults: {
       isbn: req.body.data.isbn,
@@ -28,8 +29,8 @@ exports.create = (req, res) => {
       publication_year: req.body.data.publication_year,
       place_of_publication: req.body.data.place_of_publication,
       language_of_original: req.body.data.language_of_original,
-      language: req.body.data.language_of_original,
-    },
+      language: req.body.data.language_of_original
+    }
   })
     .then((bookDetailsData) => {
       if (!bookDetailsData) {
@@ -37,11 +38,11 @@ exports.create = (req, res) => {
       }
       Publisher.findOrCreate({
         where: {
-          publisher_name: req.body.data.publisher_name,
+          publisher_name: req.body.data.publisher_name
         },
         defaults: {
-          publisher_name: req.body.data.publisher_name,
-        },
+          publisher_name: req.body.data.publisher_name
+        }
       })
         .then((publisherData) => {
           if (!publisherData) {
@@ -49,11 +50,11 @@ exports.create = (req, res) => {
           }
           Category.findOrCreate({
             where: {
-              category_name: req.body.data.category_name,
+              category_name: req.body.data.category_name
             },
             defaults: {
-              category_name: req.body.data.category_name,
-            },
+              category_name: req.body.data.category_name
+            }
           })
             .then((categoryData) => {
               if (!categoryData) {
@@ -61,11 +62,11 @@ exports.create = (req, res) => {
               }
               Genre.findOrCreate({
                 where: {
-                  genre_name: req.body.data.genre_name,
+                  genre_name: req.body.data.genre_name
                 },
                 defaults: {
-                  genre_name: req.body.data.genre_name,
-                },
+                  genre_name: req.body.data.genre_name
+                }
               })
                 .then((genreData) => {
                   if (!genreData) {
@@ -75,13 +76,13 @@ exports.create = (req, res) => {
                     where: {
                       [Op.and]: [
                         { author_name: req.body.data.author_name },
-                        { author_surname: req.body.data.author_surname },
-                      ],
+                        { author_surname: req.body.data.author_surname }
+                      ]
                     },
                     defaults: {
                       author_name: req.body.data.author_name,
-                      author_surname: req.body.data.author_surname,
-                    },
+                      author_surname: req.body.data.author_surname
+                    }
                   })
                     .then((authorData) => {
                       if (!authorData) {
@@ -92,7 +93,7 @@ exports.create = (req, res) => {
                       Book.findOrCreate({
                         where: {
                           book_details_id:
-                            bookDetailsData[0].dataValues.book_details_id,
+                            bookDetailsData[0].dataValues.book_details_id
                         },
                         defaults: {
                           author_id: authorData[0].dataValues.author_id,
@@ -101,8 +102,8 @@ exports.create = (req, res) => {
                           genre_id: genreData[0].dataValues.genre_id,
                           category_id: categoryData[0].dataValues.category_id,
                           book_details_id:
-                            bookDetailsData[0].dataValues.book_details_id,
-                        },
+                            bookDetailsData[0].dataValues.book_details_id
+                        }
                       })
                         .then((bookData) => {
                           // console.log('PROTO', Book.prototype)
@@ -156,19 +157,19 @@ exports.create = (req, res) => {
 
                           OwnedBook.findOrCreate({
                             where: {
-                              book_id: bookData[0].dataValues.book_id,
+                              book_id: bookData[0].dataValues.book_id
                             },
                             defaults: {
                               book_id: bookData[0].dataValues.book_id,
                               when_bought: req.body.data.when_bought,
                               owned_book_price: req.body.owned_book_price,
                               was_a_gift: req.body.data.was_a_gift,
-                              comment: req.body.data.comment,
-                            },
+                              comment: req.body.data.comment
+                            }
                           })
                             .then((ownedBookData) => {
                               if (ownedBookData[0]._options.isNewRecord) {
-                                const userID = req.body.data.user_id
+                                const userID = req.body.user_id
                                 User.findByPk(userID)
                                   .then((userData) => {
                                     userData
@@ -176,7 +177,7 @@ exports.create = (req, res) => {
                                       .then((response) => {
                                         console.log('USER DATA', userData),
                                           res.status(200).send({
-                                            message: response,
+                                            message: response
                                           })
                                       })
                                   })
@@ -184,20 +185,20 @@ exports.create = (req, res) => {
                                     res.status(500).send({
                                       message:
                                         err.message ||
-                                        'Error occurred creating owned book',
+                                        'Error occurred creating owned book'
                                     })
                                   })
                               } else
                                 res.status(400).send({
                                   message:
-                                    'Such book already exists in your collection',
+                                    'Such book already exists in your collection'
                                 })
                             })
                             .catch((err) => {
                               res.status(500).send({
                                 message:
                                   err.message ||
-                                  'Error occurred creating owned book',
+                                  'Error occurred creating owned book'
                               })
                             })
                         })
@@ -205,45 +206,44 @@ exports.create = (req, res) => {
                           res.status(500).send({
                             message:
                               err.message ||
-                              'Error occurred creating book in DB',
+                              'Error occurred creating book in DB'
                           })
                         })
                         .catch((err) => {
                           res.status(500).send({
                             message:
                               err.message ||
-                              'Error occured while creating the book',
+                              'Error occured while creating the book'
                           })
                         })
                     })
                     .catch((err) => {
                       res.status(500).send({
-                        message:
-                          err.message || 'Error occurred creating author',
+                        message: err.message || 'Error occurred creating author'
                       })
                     })
                 })
                 .catch((err) => {
                   res.status(500).send({
-                    message: err.message || 'Error occurred creating genre',
+                    message: err.message || 'Error occurred creating genre'
                   })
                 })
             })
             .catch((err) => {
               res.status(500).send({
-                message: err.message || 'Error occurred creating category',
+                message: err.message || 'Error occurred creating category'
               })
             })
         })
         .catch((err) => {
           res.status(500).send({
-            message: err.message || 'Error occurred creating publisher',
+            message: err.message || 'Error occurred creating publisher'
           })
         })
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Error occurred creating book',
+        message: err.message || 'Error occurred creating book'
       })
     })
 }
@@ -261,30 +261,49 @@ exports.findAll = (req, res) => {
             model: Book,
             include: [
               {
-                model: Author,
+                model: Author
               },
               {
-                model: Genre,
+                model: Genre
               },
               {
-                model: Category,
+                model: Category
               },
               {
-                model: Publisher,
+                model: Publisher
               },
               {
-                model: BookDetails,
-              },
-            ],
+                model: BookDetails
+              }
+            ]
           },
-        ],
+          {
+            model: Loan,
+            include: [
+              { model: User },
+              {
+                model: OwnedBook,
+                include: [
+                  {
+                    model: Book,
+                    include: [
+                      {
+                        model: BookDetails
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       })
       .then((data) => {
         res.send(data)
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || 'Error occurred while retrieving owned books',
+          message: err.message || 'Error occurred while retrieving owned books'
         })
       })
   })
@@ -322,7 +341,7 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving owned book with ID ' + id,
+        message: 'Error retrieving owned book with ID ' + id
       })
     })
 }
@@ -335,10 +354,10 @@ exports.update = (req, res) => {
       when_bought: req.body.data.when_bought,
       owned_book_price: req.body.data.owned_book_price,
       was_a_gift: req.body.data.was_a_gift,
-      comment: req.body.data.comment,
+      comment: req.body.data.comment
     },
     {
-      where: { owned_book_id: id },
+      where: { owned_book_id: id }
     }
   )
 
@@ -353,14 +372,14 @@ exports.update = (req, res) => {
             publication_year: req.body.data.publication_year,
             place_of_publication: req.body.data.place_of_publication,
             language_of_original: req.body.data.language_of_original,
-            language: req.body.data.language,
+            language: req.body.data.language
           },
           { where: { book_details_id: bookData.dataValues.book_details_id } }
         )
         Author.update(
           {
             author_name: req.body.data.author_name,
-            author_surname: req.body.data.author_surname,
+            author_surname: req.body.data.author_surname
           },
           { where: { author_id: bookData.dataValues.author_id } }
         )
@@ -387,22 +406,22 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id
   OwnedBook.destroy({
-    where: { owned_book_id: id },
+    where: { owned_book_id: id }
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Owned book with id ' + id + ' was deleted successfully',
+          message: 'Owned book with id ' + id + ' was deleted successfully'
         })
       } else {
         res.send({
-          message: 'Cannot delete owned book with id ' + id,
+          message: 'Cannot delete owned book with id ' + id
         })
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error deleting owned book with id ' + id,
+        message: 'Error deleting owned book with id ' + id
       })
     })
 }

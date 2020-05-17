@@ -7,6 +7,7 @@ const genreRoutes = require('./app/routes/genreRoutes')
 const bookRoutes = require('./app/routes/bookRoutes')
 const loanRoutes = require('./app/routes/loanRoutes')
 const profileRoutes = require('./app/routes/profileRoutes')
+const mailerRoutes = require('./app/routes/mailerRoutes')
 // const categoryRoutes = require('./app/routes/categoryRoutes')
 // const bookDetailsRoutes = require('./app/routes/bookDetailsRoutes')
 // const publisherRoutes = require('./app/routes/publisherRoutes')
@@ -64,7 +65,7 @@ app.set('view engine', 'ejs')
 app.use(
   cookieSession({
     maxAge: 60 * 60 * 1000,
-    keys: [process.env.COOKIE_SECRET],
+    keys: [process.env.COOKIE_SECRET]
   })
 )
 app.use(passport.initialize())
@@ -73,6 +74,7 @@ app.use(passport.session())
 app.use('/api/auth/', authRoutesOAuth)
 app.use('/api/profile/', profileRoutes)
 app.use('/api/authors/', authorRoutes)
+app.use('/api', mailerRoutes)
 // app.use('/api/publishers/', publisherRoutes)
 app.use('/api/genres/', genreRoutes)
 // app.use('/api/categories/', categoryRoutes)

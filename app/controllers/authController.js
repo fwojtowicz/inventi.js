@@ -13,20 +13,20 @@ exports.signup = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10),
-    role: req.body.roles,
+    role: req.body.roles
   })
     .then((user) => {
       if (req.body.roles) {
         Role.findAll({
           where: {
             name: {
-              [Op.or]: req.body.roles,
-            },
-          },
+              [Op.or]: req.body.roles
+            }
+          }
         }).then((roles) => {
           user.setRoles(roles).then(() => {
             res.send({
-              message: 'User registered successfully [roles provided]',
+              message: 'User registered successfully [roles provided]'
             })
           })
         })
@@ -45,8 +45,8 @@ exports.signin = (req, res) => {
   console.log(req.body)
   User.findOne({
     where: {
-      email: req.body.email,
-    },
+      email: req.body.email
+    }
   })
     .then((user) => {
       if (!user) {
@@ -56,12 +56,12 @@ exports.signin = (req, res) => {
       if (!passwordValid) {
         return res.status(401).send({
           accessToken: null,
-          message: 'Invalid password',
+          message: 'Invalid password'
         })
       }
 
       var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 3600, //1h
+        expiresIn: 86400
       })
 
       var authorities = []
@@ -75,10 +75,10 @@ exports.signin = (req, res) => {
               id: user.id,
               username: user.username,
               email: user.email,
-              roles: authorities,
-            },
+              roles: authorities
+            }
           ],
-          accessToken: token,
+          accessToken: token
         })
       })
     })

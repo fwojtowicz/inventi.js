@@ -13,13 +13,13 @@ exports.create = (req, res) => {
             where: {
               [Op.and]: [
                 { user_id: userData.user_id },
-                { owned_book_id: ownedBookData.owned_book_id },
-              ],
+                { owned_book_id: ownedBookData.owned_book_id }
+              ]
             },
             defaults: {
               when_loaned: req.body.data.when_loaned,
-              when_returned: req.body.data.when_returned,
-            },
+              when_returned: req.body.data.when_returned
+            }
           })
             .then((loan) => {
               console.log(Loan.prototype)
@@ -29,19 +29,19 @@ exports.create = (req, res) => {
             })
             .catch((err) => {
               res.status(500).send({
-                message: err.message || 'Error with loan ',
+                message: err.message || 'Error with loan '
               })
             })
         })
         .catch((err) => {
           res.status(500).send({
-            message: err.message || 'Error with owned book  ',
+            message: err.message || 'Error with owned book  '
           })
         })
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Error with user ',
+        message: err.message || 'Error with user '
       })
     })
 }
@@ -59,43 +59,57 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving loan with ID ' + id,
+        message: 'Error retrieving loan with ID ' + id
       })
     })
 }
 
 exports.findAll = (req, res) => {
-  Loan.findAll()
-    .then((data) => {
-      res.send(data)
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Error occurred while retrieving loans',
+  const userID = req.user_id
+
+  User.findByPk(userID).then((userData) => {
+    userData
+      .getLoans({})
+      .then((data) => {
+        res.send(data)
       })
-      // })
-    })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || 'Error occurred while retrieving user loans'
+        })
+      })
+  })
+  // Loan.findAll()
+  //   .then((data) => {
+  //     res.send(data)
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message: err.message || 'Error occurred while retrieving loans',
+  //     })
+  //     // })
+  //   })
 }
 
 exports.delete = (req, res) => {
   const id = req.params.id
   Loan.destroy({
-    where: { loan_id: id },
+    where: { loan_id: id }
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Loan with id ' + id + ' was deleted successfully',
+          message: 'Loan with id ' + id + ' was deleted successfully'
         })
       } else {
         res.send({
-          message: 'Cannot delete loan with id ' + id,
+          message: 'Cannot delete loan with id ' + id
         })
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error deleting loan with id ' + id,
+        message: 'Error deleting loan with id ' + id
       })
     })
 }
@@ -107,10 +121,10 @@ exports.update = (req, res) => {
       Loan.update(
         {
           when_loaned: req.body.data.when_loaned,
-          when_returned: req.body.data.when_returned,
+          when_returned: req.body.data.when_returned
         },
         {
-          where: { owned_book_id: id },
+          where: { owned_book_id: id }
         }
       )
 
@@ -123,7 +137,7 @@ exports.update = (req, res) => {
         })
         .catch((err) => {
           res.status(500).send({
-            message: 'Error with Loan',
+            message: 'Error with Loan'
           })
         })
     })
