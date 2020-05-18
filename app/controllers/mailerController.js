@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer')
 const { google } = require('googleapis')
-const OAuth2 = google.auth.OAuth2
+var xoauth2 = require('xoauth2')
 
 var auth = {
   type: 'oauth2',

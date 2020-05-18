@@ -65,30 +65,16 @@ exports.findOne = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-  const userID = req.user_id
-
-  User.findByPk(userID).then((userData) => {
-    userData
-      .getLoans({})
-      .then((data) => {
-        res.send(data)
+  Loan.findAll()
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Error occurred while retrieving loans'
       })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'Error occurred while retrieving user loans'
-        })
-      })
-  })
-  // Loan.findAll()
-  //   .then((data) => {
-  //     res.send(data)
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message: err.message || 'Error occurred while retrieving loans',
-  //     })
-  //     // })
-  //   })
+      // })
+    })
 }
 
 exports.delete = (req, res) => {
