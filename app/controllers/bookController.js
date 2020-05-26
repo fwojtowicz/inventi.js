@@ -164,7 +164,8 @@ exports.create = (req, res) => {
                               when_bought: req.body.data.when_bought,
                               owned_book_price: req.body.owned_book_price,
                               was_a_gift: req.body.data.was_a_gift,
-                              comment: req.body.data.comment
+                              comment: req.body.data.comment,
+                              isPublic: req.body.data.isPublic
                             }
                           })
                             .then((ownedBookData) => {
@@ -354,7 +355,8 @@ exports.update = (req, res) => {
       when_bought: req.body.data.when_bought,
       owned_book_price: req.body.data.owned_book_price,
       was_a_gift: req.body.data.was_a_gift,
-      comment: req.body.data.comment
+      comment: req.body.data.comment,
+      isPublic: req.body.data.isPublic
     },
     {
       where: { owned_book_id: id }
@@ -425,3 +427,71 @@ exports.delete = (req, res) => {
       })
     })
 }
+
+exports.addAuthorToBook = (req, res) => {
+  Author.findOrCreate({
+    where: {
+      [Op.and]: [
+        { author_name: req.body.data.author_name },
+        { author_surname: req.body.data.author_surname }
+      ]
+    },
+    defaults: {
+      author_name: req.body.data.author_name,
+      author_surname: req.body.data.author_surname
+    }
+  })
+    .then((authorData) => {
+      Book.findOne({
+        where: {
+          book_id: req.params.id
+        }
+      }).then((bookData) => {
+        console.log(bookData)
+        bookData
+          .addAuthor(authorData[0])
+          .then(() => console.log('NEW ADDITIONAL AUTHOR', bookData))
+        res.send(bookData)
+      })
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Error occured while adding an author'
+      })
+    })
+}
+
+exports.addGenreToBook = (req, res) => {
+  Genre.findOrCreate({
+    where: {
+      genre_name: req.body.data.genre
+    },
+    defaults: {
+      genre_name: req.body.data.genre
+    }
+  })
+    .then((genreData) => {
+      Book.findOne({
+        where: {
+          book_id: req.params.id
+        }
+      }).then((bookData) => {
+        console.log(genreData[0])
+        bookData
+          .addGenre(genreData[0])
+          .then(() => console.log('ADDITIONAL GENRE', bookData))
+        res.send(bookData)
+      })
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Error occured while adding a genre'
+      })
+    })
+}
+
+exports.getPublicLib = (req, res) =>
+  OwnedBook.findAll({ where: { isPublic: true } }).then((publicLib) => {
+    console.log('PUBLICLIB', publicLib)
+    res.send(publicLib)
+  })

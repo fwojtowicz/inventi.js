@@ -14,7 +14,13 @@ const authCheck = (req, res, next) => {
 }
 router.post('/', authCheck, Books.create)
 
+router.post('/:id/authors', authCheck, Books.addAuthorToBook)
+
+router.post('/:id/genres', authCheck, Books.addGenreToBook)
+
 router.get('/', authCheck, Books.findAll)
+
+router.get('/public', Books.getPublicLib)
 
 router.get('/:id', authCheck, Books.findOne)
 
