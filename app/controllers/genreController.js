@@ -5,12 +5,12 @@ const Op = db.Sequelize.Op
 const Book = db.book
 
 exports.create = (req, res) => {
-  if (!req.body.data.genre_name) {
-    res.status(400).send({
-      message: 'Genre name is needed'
-    })
-    return
-  }
+  // if (!req.body.data.genre_name) {
+  //   res.status(400).send({
+  //     message: 'Genre name is needed'
+  //   })
+  //   return
+  // }
 
   Genre.findOrCreate({
     where: {

@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
     comment: {
       type: Sequelize.STRING
     },
-    isPublic: {
+    is_public: {
       type: Sequelize.BOOLEAN
     }
   })

@@ -126,7 +126,11 @@ exports.create = (req, res) => {
                             //   authorData[0]
                             // )
                             bookData[0]
-                              .setAuthors(authorData[0])
+                              .removeAuthors()
+                              .then(() => {
+                                bookData[0].addAuthor(authorData[0])
+                              })
+
                               .then(() => console.log('AUTHOR', bookData))
                           }
                           if (categoryData[0].dataValues.category_name) {
@@ -165,7 +169,7 @@ exports.create = (req, res) => {
                               owned_book_price: req.body.owned_book_price,
                               was_a_gift: req.body.data.was_a_gift,
                               comment: req.body.data.comment,
-                              isPublic: req.body.data.isPublic
+                              is_public: req.body.data.is_public
                             }
                           })
                             .then((ownedBookData) => {
@@ -356,7 +360,7 @@ exports.update = (req, res) => {
       owned_book_price: req.body.data.owned_book_price,
       was_a_gift: req.body.data.was_a_gift,
       comment: req.body.data.comment,
-      isPublic: req.body.data.isPublic
+      is_public: req.body.data.is_public
     },
     {
       where: { owned_book_id: id }
@@ -429,22 +433,24 @@ exports.delete = (req, res) => {
 }
 
 exports.addAuthorToBook = (req, res) => {
+  console.log('PROTO', Book.prototype)
+
   Author.findOrCreate({
     where: {
       [Op.and]: [
-        { author_name: req.body.data.author_name },
-        { author_surname: req.body.data.author_surname }
+        { author_name: req.body.data.additional_author_name },
+        { author_surname: req.body.data.additional_author_name }
       ]
     },
     defaults: {
-      author_name: req.body.data.author_name,
-      author_surname: req.body.data.author_surname
+      author_name: req.body.data.additional_author_name,
+      author_surname: req.body.data.additional_author_surname
     }
   })
     .then((authorData) => {
       Book.findOne({
         where: {
-          book_id: req.params.id
+          book_id: req.body.data.book_id
         }
       }).then((bookData) => {
         console.log(bookData)
@@ -464,10 +470,10 @@ exports.addAuthorToBook = (req, res) => {
 exports.addGenreToBook = (req, res) => {
   Genre.findOrCreate({
     where: {
-      genre_name: req.body.data.genre
+      genre_name: req.body.data
     },
     defaults: {
-      genre_name: req.body.data.genre
+      genre_name: req.body.data
     }
   })
     .then((genreData) => {
@@ -476,7 +482,7 @@ exports.addGenreToBook = (req, res) => {
           book_id: req.params.id
         }
       }).then((bookData) => {
-        console.log(genreData[0])
+        console.log('CHECKMEHERE', genreData[0])
         bookData
           .addGenre(genreData[0])
           .then(() => console.log('ADDITIONAL GENRE', bookData))
@@ -491,7 +497,7 @@ exports.addGenreToBook = (req, res) => {
 }
 
 exports.getPublicLib = (req, res) =>
-  OwnedBook.findAll({ where: { isPublic: true } }).then((publicLib) => {
+  OwnedBook.findAll({ where: { is_public: true } }).then((publicLib) => {
     console.log('PUBLICLIB', publicLib)
     res.send(publicLib)
   })

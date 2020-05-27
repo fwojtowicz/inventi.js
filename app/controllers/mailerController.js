@@ -61,3 +61,28 @@ exports.sendReminder = (req, res) => {
     }
   })
 }
+
+exports.sendLoanRequest = (req, res) => {
+  var mailOptions = {
+    from: req.body.username,
+    to: req.body.target_mail,
+    subject:
+      'Hey ' +
+      req.body.owner_name +
+      ', I would like to borrow one of ypur books',
+    text: req.body.message
+  }
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: auth
+  })
+  transporter.sendMail(mailOptions, (err, res) => {
+    if (err) {
+      return console.log(err)
+    } else {
+      res.send(JSON.stringify(res))
+    }
+  })
+}
