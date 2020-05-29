@@ -60,15 +60,17 @@ exports.create = (req, res) => {
               if (!categoryData) {
                 throw new Error('Category error')
               }
-              Genre.findOrCreate({
-                where: {
-                  genre_name: req.body.data.genre_name
-                },
-                defaults: {
-                  genre_name: req.body.data.genre_name
-                }
-              })
+              // Genre.findOrCreate({
+              //   where: {
+              //     genre_name: req.body.data.genre_name
+              //   },
+              //   defaults: {
+              //     genre_name: req.body.data.genre_name
+              //   }
+              // })
+              Genre.bulkCreate(req.body.data.additionalGenres)
                 .then((genreData) => {
+                  console.log('jenre', genreData)
                   if (!genreData) {
                     throw new Error('Genre details error')
                   }
@@ -118,10 +120,10 @@ exports.create = (req, res) => {
                           if (genreData[0].dataValues.genre_name) {
                             // console.log('Genre from Genre Model', genreData[0])
                             bookData[0]
-                              .setGenres(genreData[0])
+                              .addGenre(genreData[0])
                               .then(() => console.log('GENRE', bookData))
                           }
-                          if (authorData[0].dataValues.author_id) {
+                          if (authorData[0]) {
                             // console.log(
                             //   'Author from Author Model',
                             //   authorData[0]
@@ -129,7 +131,7 @@ exports.create = (req, res) => {
                             bookData[0]
                               .removeAuthors()
                               .then(() => {
-                                bookData[0].addAuthor(authorData[0])
+                                bookData[0].setAuthors(authorData[0])
                               })
 
                               .then(() => console.log('AUTHOR', bookData))
@@ -375,6 +377,8 @@ exports.update = (req, res) => {
       console.log(ownedBookData)
       Book.findByPk(ownedBookData.dataValues.book_id).then((bookData) => {
         bookData.removeAuthors()
+        bookData.removeGenres()
+
         BookDetails.update(
           {
             isbn: req.body.data.isbn,
@@ -411,9 +415,23 @@ exports.update = (req, res) => {
               { publisher_name: req.body.data.publisher_name },
               { where: { publisher_id: bookData.dataValues.publisher_id } }
             )
-            Genre.update(
-              { genre_name: req.body.data.genre_name },
-              { where: { genre_id: bookData.dataValues.genre_id } }
+            // Genre.update(
+            //   { genre_name: req.body.data.genre_name },
+            //   { where: { genre_id: bookData.dataValues.genre_id } }
+            // )
+
+            Genre.bulkCreate(req.body.data.additionalGenres).then(
+              (genreData) => {
+                if (!genreData) {
+                  console.log('genreData details error')
+                }
+                console.log('jenre', genreData)
+                // authorObject = {
+                //   author_name: authorData.author_name,
+                //   author_surname: authorData.author_surname
+                // }
+                bookData.setGenres(genreData)
+              }
             )
             Category.update(
               { category_name: req.body.data.category_name },
