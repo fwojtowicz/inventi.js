@@ -374,6 +374,7 @@ exports.update = (req, res) => {
     .then((ownedBookData) => {
       console.log(ownedBookData)
       Book.findByPk(ownedBookData.dataValues.book_id).then((bookData) => {
+        bookData.removeAuthors()
         BookDetails.update(
           {
             isbn: req.body.data.isbn,
@@ -399,7 +400,11 @@ exports.update = (req, res) => {
             if (!authorData) {
               console.log('Author details error')
             }
-            bookData.addAuthor(authorData)
+            // authorObject = {
+            //   author_name: authorData.author_name,
+            //   author_surname: authorData.author_surname
+            // }
+            bookData.setAuthors(authorData)
             console.log('DEJTA', bookData)
 
             Publisher.update(
