@@ -72,18 +72,19 @@ exports.create = (req, res) => {
                   if (!genreData) {
                     throw new Error('Genre details error')
                   }
-                  Author.findOrCreate({
-                    where: {
-                      [Op.and]: [
-                        { author_name: req.body.data.author_name },
-                        { author_surname: req.body.data.author_surname }
-                      ]
-                    },
-                    defaults: {
-                      author_name: req.body.data.author_name,
-                      author_surname: req.body.data.author_surname
-                    }
-                  })
+                  // Author.findOrCreate({
+                  //   where: {
+                  //     [Op.and]: [
+                  //       { author_name: req.body.data.author_name },
+                  //       { author_surname: req.body.data.author_surname }
+                  //     ]
+                  //   },
+                  //   defaults: {
+                  //     author_name: req.body.data.author_name,
+                  //     author_surname: req.body.data.author_surname
+                  //   }
+                  // })
+                  Author.bulkCreate(req.body.data.additionalAuthors)
                     .then((authorData) => {
                       if (!authorData) {
                         throw new Error('Author details error')
@@ -352,6 +353,8 @@ exports.findOne = (req, res) => {
 }
 
 exports.update = (req, res) => {
+  console.log('PROTO', Book.prototype)
+
   const id = req.params.id
 
   OwnedBook.update(
@@ -382,24 +385,36 @@ exports.update = (req, res) => {
           },
           { where: { book_details_id: bookData.dataValues.book_details_id } }
         )
-        Author.update(
-          {
-            author_name: req.body.data.author_name,
-            author_surname: req.body.data.author_surname
-          },
-          { where: { author_id: bookData.dataValues.author_id } }
-        )
-        Publisher.update(
-          { publisher_name: req.body.data.publisher_name },
-          { where: { publisher_id: bookData.dataValues.publisher_id } }
-        )
-        Genre.update(
-          { genre_name: req.body.data.genre_name },
-          { where: { genre_id: bookData.dataValues.genre_id } }
-        )
-        Category.update(
-          { category_name: req.body.data.category_name },
-          { where: { category_id: bookData.dataValues.category_id } }
+        // Author.update(
+        //   {
+        //     author_name: req.body.data.author_name,
+        //     author_surname: req.body.data.author_surname
+        //   },
+        //   { where: { author_id: bookData.dataValues.author_id } }
+        // )
+
+        console.log('CHECKME', bookData)
+        Author.bulkCreate(req.body.data.additionalAuthors).then(
+          (authorData) => {
+            if (!authorData) {
+              console.log('Author details error')
+            }
+            bookData.addAuthor(authorData)
+            console.log('DEJTA', bookData)
+
+            Publisher.update(
+              { publisher_name: req.body.data.publisher_name },
+              { where: { publisher_id: bookData.dataValues.publisher_id } }
+            )
+            Genre.update(
+              { genre_name: req.body.data.genre_name },
+              { where: { genre_id: bookData.dataValues.genre_id } }
+            )
+            Category.update(
+              { category_name: req.body.data.category_name },
+              { where: { category_id: bookData.dataValues.category_id } }
+            )
+          }
         )
       })
     })
