@@ -63,13 +63,16 @@ exports.sendReminder = (req, res) => {
 }
 
 exports.sendLoanRequest = (req, res) => {
+  response = {
+    name: req.body.name,
+    email: req.body.email,
+    message: req.body.message
+  }
+
   var mailOptions = {
-    from: req.body.username,
+    from: req.body.owner_name,
     to: req.body.target_mail,
-    subject:
-      'Hey ' +
-      req.body.owner_name +
-      ', I would like to borrow one of ypur books',
+    subject: req.body.owner_name + ' wants to borrow your book',
     text: req.body.message
   }
   var transporter = nodemailer.createTransport({

@@ -3,20 +3,20 @@ module.exports = (sequelize, Sequelize) => {
     loan_id: {
       autoIncrement: true,
       primaryKey: true,
-      type: Sequelize.INTEGER,
+      type: Sequelize.INTEGER
     },
     user_id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.INTEGER
     },
     owned_book_id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.INTEGER
     },
     when_loaned: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY
     },
     when_returned: {
-      type: Sequelize.DATE,
-    },
+      type: Sequelize.DATEONLY
+    }
   })
   return Loan
 }

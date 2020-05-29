@@ -29,7 +29,7 @@ exports.create = (req, res) => {
             })
             .catch((err) => {
               res.status(500).send({
-                message: err.message || 'Error with loan '
+                message: err.message
               })
             })
         })
@@ -117,13 +117,14 @@ exports.update = (req, res) => {
       Loan.findByPk(id)
         .then((loan) => {
           console.log(Loan.prototype)
-          loan[0].setUser(userData)
-          loan[0].setOwnedBook(ownedBookData)
+          loan.setUser(userData)
+          loan.setOwnedBook(ownedBookData)
+          console.log('FUUUCK', loan)
           res.send(loan)
         })
         .catch((err) => {
           res.status(500).send({
-            message: 'Error with Loan'
+            message: err.message
           })
         })
     })

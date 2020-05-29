@@ -535,7 +535,22 @@ exports.addGenreToBook = (req, res) => {
 }
 
 exports.getPublicLib = (req, res) =>
-  OwnedBook.findAll({ where: { is_public: true } }).then((publicLib) => {
+  OwnedBook.findAll({
+    where: { is_public: true },
+    include: [
+      { model: User },
+
+      {
+        model: Book,
+        include: [
+          {
+            model: Author
+          },
+          { model: BookDetails }
+        ]
+      }
+    ]
+  }).then((publicLib) => {
     console.log('PUBLICLIB', publicLib)
     res.send(publicLib)
   })
