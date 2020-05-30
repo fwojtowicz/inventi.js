@@ -176,7 +176,10 @@ exports.create = (req, res) => {
                             }
                           })
                             .then((ownedBookData) => {
-                              if (ownedBookData[0]._options.isNewRecord) {
+                              console.log('wlasciciel', ownedBookData[0])
+                              if (
+                                ownedBookData[0].user_id != req.body.user_id
+                              ) {
                                 const userID = req.body.user_id
                                 User.findByPk(userID)
                                   .then((userData) => {

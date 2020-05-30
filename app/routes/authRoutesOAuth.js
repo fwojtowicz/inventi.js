@@ -10,7 +10,7 @@ const config = require('../config/auth.config')
 const verify = async (token) => {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID,
+    audience: process.env.GOOGLE_CLIENT_ID
   })
 
   return ticket
@@ -25,20 +25,16 @@ const checkGoogleAccount = async (ticket) => {
     defaults: {
       email: payload.email,
       username: payload.name,
-      googleID: userid,
-    },
+      googleID: userid
+    }
   })
   // newUser.setRoles([1])
 
   console.log('LOOK', newUser[0])
 
-  var token = jwt.sign(
-    { user_id: newUser[0].dataValues.user_id },
-    config.secret,
-    {
-      expiresIn: 3600, //1h
-    }
-  )
+  var token = jwt.sign({ id: newUser[0].dataValues.user_id }, config.secret, {
+    expiresIn: 3600 //1h
+  })
   console.log('TOKEN', token)
   return { newUser: newUser, accessToken: token }
   // .then((newUser) => {
