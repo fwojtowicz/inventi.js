@@ -43,12 +43,14 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   console.log(req.body)
+
   User.findOne({
     where: {
       email: req.body.email
     }
   })
     .then((user) => {
+      console.log('IMHEREHERE', user.dataValues.user_id)
       if (!user) {
         return res.status(404).send({ message: 'User not found' })
       }
@@ -60,7 +62,7 @@ exports.signin = (req, res) => {
         })
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      var token = jwt.sign({ id: user.dataValues.user_id }, config.secret, {
         expiresIn: 86400
       })
 
@@ -72,7 +74,7 @@ exports.signin = (req, res) => {
         res.status(200).send({
           newUser: [
             {
-              id: user.id,
+              id: user.dataValues.user_id,
               username: user.username,
               email: user.email,
               roles: authorities

@@ -20,7 +20,7 @@ verifyToken = (req, res, next) => {
       })
     }
     console.log('DECODED', decoded)
-    req.user_id = decoded.user_id
+    req.user_id = decoded.id
     next()
   })
 }

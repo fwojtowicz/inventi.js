@@ -13,16 +13,22 @@ exports.create = (req, res) => {
             where: {
               [Op.and]: [
                 { user_id: userData.user_id },
-                { owned_book_id: ownedBookData.owned_book_id }
+                { owned_book_id: ownedBookData.owned_book_id },
+                {
+                  when_loaned: req.body.data.when_loaned
+                },
+                { when_returned: req.body.data.when_returned }
               ]
             },
             defaults: {
+              user_id: req.body.data.user_id,
+              owned_book_id: req.body.data.owned_book_id,
               when_loaned: req.body.data.when_loaned,
               when_returned: req.body.data.when_returned
             }
           })
             .then((loan) => {
-              console.log(Loan.prototype)
+              console.log('CHECHNIK', loan)
               loan[0].setUser(userData)
               loan[0].setOwnedBook(ownedBookData)
               res.send(loan)
@@ -107,10 +113,11 @@ exports.update = (req, res) => {
       Loan.update(
         {
           when_loaned: req.body.data.when_loaned,
+
           when_returned: req.body.data.when_returned
         },
         {
-          where: { owned_book_id: id }
+          where: { loan_id: id }
         }
       )
 
@@ -119,6 +126,11 @@ exports.update = (req, res) => {
           console.log(Loan.prototype)
           loan.setUser(userData)
           loan.setOwnedBook(ownedBookData)
+          console.log('maybe', req.body.data.when_returned)
+          loan.when_loaned = req.body.data.when_loaned
+          loan.when_returned = req.body.data.when_returned
+          loan.save()
+
           console.log('FUUUCK', loan)
           res.send(loan)
         })
