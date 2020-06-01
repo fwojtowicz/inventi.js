@@ -68,17 +68,29 @@ exports.create = (req, res) => {
               //     genre_name: req.body.data.genre_name
               //   }
               // })
-              Genre.bulkCreate(req.body.data.additionalGenres)
+              // Genre.bulkCreate(req.body.data.additionalGenres)
+              var genres = req.body.data.additionalGenres
+              genreData = []
+              for (var g = 0; g < genres.length; g++) {
+                var newGenresPromise = Genre.findOrCreate({
+                  where: {
+                    genre_name: genres[g].genre_name
+                  },
+                  defaults: {
+                    genre_name: genres[g].genre_name
+                  }
+                })
+                genreData.push(newGenresPromise)
+              }
+              return Promise.all(genreData)
                 .then((genreData) => {
                   // console.log('jenre', genreData)
                   if (!genreData) {
                     throw new Error('Genre details error')
                   }
-                  console.log('DEJTAAUT', req.body.data.additionalAuthors)
                   var authors = req.body.data.additionalAuthors
                   authorData = []
                   for (var i = 0; i < authors.length; i++) {
-                    console.log('REQASUT', authors[i])
                     var newPromise = Author.findOrCreate({
                       where: {
                         [Op.and]: [
@@ -91,14 +103,12 @@ exports.create = (req, res) => {
                         author_surname: authors[i].author_surname
                       }
                     })
-                    console.log('PROMYS', newPromise)
                     authorData.push(newPromise)
                   }
                   return (
                     Promise.all(authorData)
                       // Author.bulkCreate(req.body.data.additionalAuthors)
                       .then((authorData) => {
-                        console.log('HEREEE', authorData)
                         if (!authorData) {
                           throw new Error('Author details error')
                         }
@@ -113,7 +123,7 @@ exports.create = (req, res) => {
                             // author_id: authorData[0].dataValues.author_id,
                             publisher_id:
                               publisherData[0].dataValues.publisher_id,
-                            genre_id: genreData[0].dataValues.genre_id,
+                            // genre_id: genreData[0].dataValues.genre_id,
                             category_id: categoryData[0].dataValues.category_id,
                             book_details_id:
                               bookDetailsData[0].dataValues.book_details_id
@@ -128,26 +138,40 @@ exports.create = (req, res) => {
                             // console.log('Category Data', categoryData)
                             // console.log('Publisher Data', categoryData)
 
-                            if (genreData[0].dataValues.genre_name) {
+                            if (genreData[0]) {
+                              console.log('GENREDATA', genreData.length)
+                              newGenreData = genreData
+                              for (var h = 0; h < genreData.length; h++) {
+                                // var currA = authorData[0]
+                                // var newGenreData = genreData[0]
+                                var currG = newGenreData[h]
+                                // console.log('CURRA', currG)
+                                bookData[0].addGenre(currG[0])
+                                // console.log('PROMYS2', )
+                              }
                               // console.log('Genre from Genre Model', genreData[0])
-                              bookData[0].addGenre(genreData[0])
+                              // bookData[0].addGenre(genreData[0])
                               // .then(() => console.log('GENRE', bookData))
                             }
                             if (authorData[0]) {
+                              console.log(
+                                'AUTHORDATA',
+                                authorData.length.length
+                              )
+                              newAuthorData = authorData
+
                               // console.log(
                               //   'Author from Author Model',
                               //   authorData[0]
                               // )
-                              for (
-                                var j = 0;
-                                j < authorData[0].length - 1;
-                                j++
-                              ) {
-                                // var currA = authorData[0]
-                                console.log('laala', authorData[j].length)
-                                var currA = authorData[j]
-                                console.log('CURRA', currA[0])
+                              for (var j = 0; j < authorData.length; j++) {
+                                var currA = newAuthorData[j]
                                 bookData[0].addAuthor(currA[0])
+
+                                // console.log('laala', authorData[j].length)
+                                // var currA = authorData[j]
+                                // console.log('CURRA', currA[0])
+                                // bookData[0].addAuthor(currA[0])
                                 // console.log('PROMYS2', )
                               }
 
