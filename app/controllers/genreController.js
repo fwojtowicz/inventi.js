@@ -26,10 +26,8 @@ exports.create = (req, res) => {
           book_id: req.body.data.book_id
         }
       }).then((bookData) => {
-        console.log(genreData[0])
-        bookData
-          .addGenre(genreData[0])
-          .then(() => console.log('ADDITIONAL GENRE', bookData))
+        bookData.addGenre(genreData[0])
+        // .then(() =>
         res.send(bookData)
       })
     })

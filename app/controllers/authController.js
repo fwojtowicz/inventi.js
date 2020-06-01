@@ -42,15 +42,12 @@ exports.signup = (req, res) => {
 }
 
 exports.signin = (req, res) => {
-  console.log(req.body)
-
   User.findOne({
     where: {
       email: req.body.email
     }
   })
     .then((user) => {
-      console.log('IMHEREHERE', user.dataValues.user_id)
       if (!user) {
         return res.status(404).send({ message: 'User not found' })
       }

@@ -28,7 +28,6 @@ exports.create = (req, res) => {
             }
           })
             .then((loan) => {
-              console.log('CHECHNIK', loan)
               loan[0].setUser(userData)
               loan[0].setOwnedBook(ownedBookData)
               res.send(loan)
@@ -54,7 +53,6 @@ exports.create = (req, res) => {
 
 exports.findOne = (req, res) => {
   const id = req.params.id
-  console.log('ID', id)
 
   Loan.findByPk(id, { include: [{ model: User }, { model: OwnedBook }] })
     .then((data) => {
@@ -123,15 +121,13 @@ exports.update = (req, res) => {
 
       Loan.findByPk(id)
         .then((loan) => {
-          console.log(Loan.prototype)
           loan.setUser(userData)
           loan.setOwnedBook(ownedBookData)
-          console.log('maybe', req.body.data.when_returned)
+
           loan.when_loaned = req.body.data.when_loaned
           loan.when_returned = req.body.data.when_returned
           loan.save()
 
-          console.log('FUUUCK', loan)
           res.send(loan)
         })
         .catch((err) => {

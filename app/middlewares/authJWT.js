@@ -19,19 +19,17 @@ verifyToken = (req, res, next) => {
         message: 'Unauthorized'
       })
     }
-    console.log('DECODED', decoded)
+
     req.user_id = decoded.id
     next()
   })
 }
 
 isAdmin = (req, res, next) => {
-  console.log('CALLED', req.UserID)
   User.findByPk(req.UserID).then((user) => {
     user.getRoles().then((roles) => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === 'admin') {
-          console.log('isAdmin!!!')
           next()
           return
         }

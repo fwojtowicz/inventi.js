@@ -6,7 +6,6 @@ const { authJWT } = require('../middlewares')
 const authCheck = (req, res, next) => {
   if (!req.user) {
     authJWT.verifyToken(req, res, next)
-    console.log('USERID', req)
   } else {
     req.body.data.user_id = req.user.dataValues.user_id
     next()

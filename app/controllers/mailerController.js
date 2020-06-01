@@ -28,9 +28,9 @@ var auth = {
 
 // transporter.sendMail(mailOptions, function (error, info) {
 //   if (error) {
-//     console.log(error)
+//
 //   } else {
-//     console.log('Email sent: ' + info.response)
+//
 //   }
 // })
 
@@ -55,7 +55,7 @@ exports.sendReminder = (req, res) => {
   })
   transporter.sendMail(mailOptions, (err, res) => {
     if (err) {
-      return console.log(err)
+      return
     } else {
       res.send(JSON.stringify(res))
     }
@@ -83,7 +83,7 @@ exports.sendLoanRequest = (req, res) => {
   })
   transporter.sendMail(mailOptions, (err, res) => {
     if (err) {
-      return console.log(err)
+      return
     } else {
       res.send(JSON.stringify(res))
     }
