@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const passport = require('passport')
+// const passport = require('passport')
 const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const db = require('../models')

@@ -8,7 +8,9 @@ checkDuplicates = (req, res, next) => {
       username: req.body.username
     }
   }).then((user) => {
-    if (user) {
+    console.log('DEBUG', user)
+    if (user != null) {
+      console.log('there is')
       res.status(400).send({
         message: 'Username already in use'
       })

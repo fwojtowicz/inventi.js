@@ -15,7 +15,7 @@ const userRoutes = require('./app/routes/userRoutes')
 // const authRoutesLocal = require('./app/routes/authRoutesLocal')
 
 const cookieSession = require('cookie-session')
-const passport = require('passport')
+// const passport = require('passport')
 require('dotenv').config({ path: '.env' })
 
 const app = express()
@@ -56,7 +56,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // };
 
 require('./app/routes/authRoutesLocal')(app)
-const passportSetup = require('./app/config/passport.config')
+// const passportSetup = require('./app/config/passport.config')
 
 // require("./app/routes/bookRoutes")(app)
 // require("./app/routes/userRoutes")(app)
@@ -69,8 +69,8 @@ app.use(
     keys: [process.env.COOKIE_SECRET]
   })
 )
-app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 app.use('/api/auth/', authRoutesOAuth)
 app.use('/api/profile/', profileRoutes)
@@ -93,17 +93,16 @@ const Role = db.role
 
 db.sequelize.sync({}).then(() => {
   // initial()
-  //force:true
 })
 
 // function initial() {
 //   Role.create({
 //     id: 1,
-//     name: 'user',
+//     name: 'user'
 //   })
 //   Role.create({
 //     id: 2,
-//     name: 'admin',
+//     name: 'admin'
 //   })
 // }
 
