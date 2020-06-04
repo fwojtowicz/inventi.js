@@ -11,5 +11,4 @@ router.patch('/:id', loans.update)
 
 router.delete('/:id', loans.delete)
 
-// router.delete('/', Books.deleteAll)
 module.exports = router

@@ -31,7 +31,6 @@ exports.signup = (req, res) => {
           })
         })
       } else {
-        console.log('PROBLEM', User.prototype)
         user.setRoles([1]).then((problem) => {
           res.send({ message: 'User registered successfully' })
         })

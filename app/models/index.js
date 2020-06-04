@@ -7,7 +7,7 @@ if (process.env.DATABASE_URL) {
     protocol: 'postgres',
     port: 5432,
     host: '<heroku host>',
-    logging: true,
+    logging: true
   })
 } else {
   sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -18,8 +18,8 @@ if (process.env.DATABASE_URL) {
       max: dbConfig.pool.max,
       min: dbConfig.pool.min,
       acquire: dbConfig.pool.acquire,
-      idle: dbConfig.pool.idle,
-    },
+      idle: dbConfig.pool.idle
+    }
   })
 }
 
@@ -32,7 +32,6 @@ db.book = require('./bookModel.js')(sequelize, Sequelize)
 db.user = require('./userModel.js')(sequelize, Sequelize)
 db.role = require('./roleModel')(sequelize, Sequelize)
 db.author = require('./authorModel')(sequelize, Sequelize)
-db.bookDetails = require('./bookDetailsModel')(sequelize, Sequelize)
 db.category = require('./categoryModel')(sequelize, Sequelize)
 db.genre = require('./genreModel')(sequelize, Sequelize)
 db.loan = require('./loanModel')(sequelize, Sequelize)
@@ -42,13 +41,13 @@ db.publisher = require('./publisherModel')(sequelize, Sequelize)
 db.role.belongsToMany(db.user, {
   through: 'UserRoles',
   foreignKey: 'roleID',
-  otherKey: 'userID',
+  otherKey: 'userID'
 })
 
 db.user.belongsToMany(db.role, {
   through: 'UserRoles',
   foreignKey: 'userID',
-  otherKey: 'roleID',
+  otherKey: 'roleID'
 })
 
 db.user.hasMany(db.ownedBook, { foreignKey: 'user_id', targetKey: 'user_id' })
@@ -57,7 +56,7 @@ db.ownedBook.belongsTo(db.user, { foreignKey: 'user_id' })
 db.user.hasMany(db.loan, { foreignKey: 'user_id', targetKey: 'user_id' })
 db.ownedBook.hasMany(db.loan, {
   foreignKey: 'owned_book_id',
-  targetKey: 'owned_book_id',
+  targetKey: 'owned_book_id'
 })
 
 db.loan.belongsTo(db.user, { foreignKey: 'user_id' })
@@ -69,53 +68,43 @@ db.ownedBook.belongsTo(db.book, { foreignKey: 'book_id' })
 db.book.belongsToMany(db.author, {
   through: 'BookAuthors',
   foreignKey: 'book_id',
-  otherKey: 'author_id',
+  otherKey: 'author_id'
 })
 
 db.author.belongsToMany(db.book, {
   through: 'BookAuthors',
   foreignKey: 'author_id',
-  otherKey: 'book_id',
+  otherKey: 'book_id'
 })
 
 db.book.belongsToMany(db.genre, {
   through: 'BookGenres',
   foreignKey: 'book_id',
-  otherKey: 'genre_id',
+  otherKey: 'genre_id'
 })
 
 db.genre.belongsToMany(db.book, {
   through: 'BookGenres',
   foreignKey: 'genre_id',
-  otherKey: 'book_id',
+  otherKey: 'book_id'
 })
 
 db.category.hasMany(db.book, {
   foreignKey: 'category_id',
-  targetKey: 'category_id',
+  targetKey: 'category_id'
 })
 
 db.book.belongsTo(db.category, {
-  foreignKey: 'category_id',
-})
-
-db.bookDetails.hasOne(db.book, {
-  foreignKey: 'book_details_id',
-})
-db.book.belongsTo(db.bookDetails, {
-  foreignKey: 'book_details_id',
+  foreignKey: 'category_id'
 })
 
 db.publisher.hasMany(db.book, {
   foreignKey: 'publisher_id',
-  targetKey: 'publisher_id',
+  targetKey: 'publisher_id'
 })
 db.book.belongsTo(db.publisher, {
-  foreignKey: 'publisher_id',
+  foreignKey: 'publisher_id'
 })
-
-// db.user.hasMany(db.loan, { foreignKey: "id" })
-// db.loan.hasMany(db.ownedBook, { foreignKey: "id" })
 
 db.ROLES = ['user', 'admin']
 

@@ -28,16 +28,12 @@ const checkGoogleAccount = async (ticket) => {
       googleID: userid
     }
   })
-  // newUser.setRoles([1])
 
   var token = jwt.sign({ id: newUser[0].dataValues.user_id }, config.secret, {
     expiresIn: 3600 //1h
   })
 
   return { newUser: newUser, accessToken: token }
-  // .then((newUser) => {
-  //
-  // })
 }
 
 router.get('/login', (req, res) => {
@@ -55,23 +51,9 @@ router.post('/google', (req, res) => {
       checkGoogleAccount(ticket)
         .then((obj) => res.send(obj))
         .catch(console.error)
-      // .then((newUser) => {
-      //
-      // })
-      // .catch(console.error)
     })
     .catch(console.error)
   //
-  // res.send(result)
 })
-// router.get(
-//   "/google",
-//   passport.authenticate("google", {
-//     scope: ["profile", "email"],
-//   })
-// )
-// router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-//   res.redirect("/api/profile/")
-// })
 
 module.exports = router

@@ -2,20 +2,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const authRoutesOAuth = require('./app/routes/authRoutesOAuth')
-const authorRoutes = require('./app/routes/authorRoutes')
-const genreRoutes = require('./app/routes/genreRoutes')
 const bookRoutes = require('./app/routes/bookRoutes')
 const loanRoutes = require('./app/routes/loanRoutes')
 const profileRoutes = require('./app/routes/profileRoutes')
 const mailerRoutes = require('./app/routes/mailerRoutes')
 const userRoutes = require('./app/routes/userRoutes')
-// const categoryRoutes = require('./app/routes/categoryRoutes')
-// const bookDetailsRoutes = require('./app/routes/bookDetailsRoutes')
-// const publisherRoutes = require('./app/routes/publisherRoutes')
-// const authRoutesLocal = require('./app/routes/authRoutesLocal')
 
 const cookieSession = require('cookie-session')
-// const passport = require('passport')
 require('dotenv').config({ path: '.env' })
 
 const app = express()
@@ -56,10 +49,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // };
 
 require('./app/routes/authRoutesLocal')(app)
-// const passportSetup = require('./app/config/passport.config')
-
-// require("./app/routes/bookRoutes")(app)
-// require("./app/routes/userRoutes")(app)
 
 app.set('view engine', 'ejs')
 
@@ -69,18 +58,11 @@ app.use(
     keys: [process.env.COOKIE_SECRET]
   })
 )
-// app.use(passport.initialize())
-// app.use(passport.session())
 
 app.use('/api/auth/', authRoutesOAuth)
 app.use('/api/profile/', profileRoutes)
-// app.use('/api/authors/', authorRoutes)
 app.use('/api', mailerRoutes)
 app.use('/api/users/', userRoutes)
-// app.use('/api/publishers/', publisherRoutes)
-// app.use('/api/genres/', genreRoutes)
-// app.use('/api/categories/', categoryRoutes)
-// app.use('/api/bookdetails/', bookDetailsRoutes)
 app.use('/api/books/', bookRoutes)
 app.use('/api/loans/', loanRoutes)
 
@@ -91,8 +73,8 @@ app.get('/api', (req, res) => {
 const db = require('./app/models')
 const Role = db.role
 
-db.sequelize.sync({}).then(() => {
-  // initial()
+db.sequelize.sync({ force: true }).then(() => {
+  initial()
 })
 
 function initial() {

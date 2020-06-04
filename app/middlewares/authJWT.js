@@ -13,7 +13,6 @@ verifyToken = (req, res, next) => {
   }
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      // return res.redirect("/api/auth/login")
       return res.status(401).send({
         error: err,
         message: 'Unauthorized'
