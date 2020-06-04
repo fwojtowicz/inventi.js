@@ -130,72 +130,29 @@ exports.create = (req, res) => {
                           }
                         })
                           .then((bookData) => {
-                            // console.log('PROTO', Book.prototype)
-                            // console.log('USERPROTO', User.prototype)
-                            // console.log('Book Data', bookData)
-                            // console.log('Author Data', authorData)
-                            // console.log('Genre Data', genreData)
-                            // console.log('Category Data', categoryData)
-                            // console.log('Publisher Data', categoryData)
-
                             if (genreData[0]) {
-                              console.log('GENREDATA', genreData.length)
                               newGenreData = genreData
                               for (var h = 0; h < genreData.length; h++) {
-                                // var currA = authorData[0]
-                                // var newGenreData = genreData[0]
                                 var currG = newGenreData[h]
-                                // console.log('CURRA', currG)
                                 bookData[0].addGenre(currG[0])
-                                // console.log('PROMYS2', )
                               }
-                              // console.log('Genre from Genre Model', genreData[0])
-                              // bookData[0].addGenre(genreData[0])
-                              // .then(() => console.log('GENRE', bookData))
                             }
                             if (authorData[0]) {
-                              console.log('AUTHORDATA')
                               newAuthorData = authorData
-
-                              // console.log(
-                              //   'Author from Author Model',
-                              //   authorData[0]
-                              // )
                               for (var j = 0; j < authorData.length; j++) {
                                 var currA = newAuthorData[j]
                                 bookData[0].addAuthor(currA[0])
-
-                                // console.log('laala', authorData[j].length)
-                                // var currA = authorData[j]
-                                // console.log('CURRA', currA[0])
-                                // bookData[0].addAuthor(currA[0])
-                                // console.log('PROMYS2', )
                               }
-
-                              // .then(() => console.log('AUTHOR', bookData))
                             }
                             if (categoryData[0].dataValues.category_name) {
-                              // console.log(
-                              //   'Category from Category Model',
-                              //   authorData[0]
-                              // )
                               bookData[0].setCategory(categoryData[0])
-                              // .then(() => console.log('CATEGORY', bookData))
                             }
-                            if (publisherData[0].dataValues.category_id) {
-                              // console.log(
-                              //   'Publisher from Publisher Model',
-                              //   publisherData[0]
-                              // )
+                            if (publisherData[0].dataValues.publisher_id) {
                               bookData[0].setPublisher(publisherData[0])
-                              // .then(() => console.log('PUBLISHER', bookData))
                             }
                             if (bookDetailsData[0].dataValues.book_details_id) {
-                              // console.log('Book Details from Book Details Model')
                               bookData[0].setBookDetail(bookDetailsData[0])
-                              // .then(() => console.log('BOOKDATA', bookData))
                             }
-                            console.log('BOOK DATA', bookData)
 
                             OwnedBook.findOrCreate({
                               where: {
@@ -358,29 +315,9 @@ exports.findAll = (req, res) => {
 }
 
 exports.findOne = (req, res) => {
-  // console.log('FINDONE')
   const id = req.params.id
-  // console.log('ID', id)
 
-  OwnedBook.findByPk(id, {
-    // include: [
-    //   {
-    //     model: Author,
-    //   },
-    //   {
-    //     model: Genre,
-    //   },
-    //   {
-    //     model: Category,
-    //   },
-    //   {
-    //     model: Publisher,
-    //   },
-    //   {
-    //     model: BookDetails,
-    //   },
-    // ],
-  })
+  OwnedBook.findByPk(id, {})
     .then((data) => {
       if (!data) {
         res.status(404)
@@ -395,8 +332,6 @@ exports.findOne = (req, res) => {
 }
 
 exports.update = (req, res) => {
-  // console.log('PROTO', Book.prototype)
-
   const id = req.params.id
 
   OwnedBook.update(

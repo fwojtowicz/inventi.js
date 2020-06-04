@@ -74,11 +74,11 @@ app.use(
 
 app.use('/api/auth/', authRoutesOAuth)
 app.use('/api/profile/', profileRoutes)
-app.use('/api/authors/', authorRoutes)
+// app.use('/api/authors/', authorRoutes)
 app.use('/api', mailerRoutes)
 app.use('/api/users/', userRoutes)
 // app.use('/api/publishers/', publisherRoutes)
-app.use('/api/genres/', genreRoutes)
+// app.use('/api/genres/', genreRoutes)
 // app.use('/api/categories/', categoryRoutes)
 // app.use('/api/bookdetails/', bookDetailsRoutes)
 app.use('/api/books/', bookRoutes)
@@ -95,16 +95,16 @@ db.sequelize.sync({}).then(() => {
   // initial()
 })
 
-// function initial() {
-//   Role.create({
-//     id: 1,
-//     name: 'user'
-//   })
-//   Role.create({
-//     id: 2,
-//     name: 'admin'
-//   })
-// }
+function initial() {
+  Role.create({
+    id: 1,
+    name: 'user'
+  })
+  Role.create({
+    id: 2,
+    name: 'admin'
+  })
+}
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`))
