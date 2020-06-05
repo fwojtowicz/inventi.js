@@ -11,29 +11,6 @@ var auth = {
   accessToken: process.env.GOOGLE_ACCESS_TOKEN
 }
 
-// var transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'librarysavermailer@gmail.com',
-//     pass: process.env.MAILER_PASSWORD
-//   }
-// })
-
-// var mailOptions = {
-//   from: 'librarysavermailer@gmail.com',
-//   to: 'fil.wojtowicz@gmail.com',
-//   subject: 'Sending Email using Node.js',
-//   text: 'That was easy!'
-// }
-
-// transporter.sendMail(mailOptions, function (error, info) {
-//   if (error) {
-//
-//   } else {
-//
-//   }
-// })
-
 exports.sendReminder = (req, res) => {
   response = {
     name: req.body.name,
@@ -55,9 +32,9 @@ exports.sendReminder = (req, res) => {
   })
   transporter.sendMail(mailOptions, (err, res) => {
     if (err) {
-      return
+      console.log(err)
     } else {
-      res.send(JSON.stringify(res))
+      console.log(res)
     }
   })
 }
