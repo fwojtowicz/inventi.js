@@ -1,19 +1,26 @@
-// module.exports = app => {
-//   const books = require("../controllers/bookController.js");
+const Books = require('../controllers/bookController')
+var router = require('express').Router()
 
-//   var router = require("express").Router();
+const { authJWT } = require('../middlewares')
 
-//   router.post("/", books.create);
+const authCheck = (req, res, next) => {
+  if (!req.user) {
+    authJWT.verifyToken(req, res, next)
+  } else {
+    req.body.data.user_id = req.user.dataValues.user_id
+    next()
+  }
+}
+router.post('/', authCheck, Books.create)
 
-//   router.get("/", books.findAll);
+router.get('/', authCheck, Books.findAll)
 
-//   router.get("/:id", books.findOne);
+router.get('/public', Books.getPublicLib)
 
-//   router.patch("/:id", books.update);
+router.get('/:id', authCheck, Books.findOne)
 
-//   router.delete("/:id", books.delete);
+router.patch('/:id', authCheck, Books.update)
 
-//   router.delete("/", books.deleteAll);
+router.delete('/:id', authCheck, Books.delete)
 
-//   app.use('/api/books', router);
-// };
+module.exports = router

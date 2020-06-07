@@ -1,3 +1,4 @@
+require("dotenv").config()
 module.exports = {
-  secret: "ksdnjkjsdnkjson637ef6u6fvs",
+  secret: process.env.JWT_SECRET,
 }
